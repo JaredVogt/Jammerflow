@@ -1,4 +1,10 @@
+# Personal config (symlinked from dotfiles)
+config.toml
+
+# Internal/Personal docs
+refactor_proposal.md
+
+# macOS
 .DS_Store
 **/.DS_Store
 *.psd
-config.toml

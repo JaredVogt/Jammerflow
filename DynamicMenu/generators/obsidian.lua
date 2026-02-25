@@ -95,7 +95,7 @@ return function(args)
     -- "Next" at TOP (sortKey "0" sorts first)
     if hasMore then
       local nextOffset = offset + fileLimit
-      local nextAction = "dynamic:obsidian|" .. path .. "," .. limit .. "," .. nextOffset
+      local nextAction = "dynamic:obsidian|" .. vault .. "," .. path .. "," .. limit .. "," .. nextOffset
       items["down"] = {
         label = "Next ↓",
         action = nextAction,
@@ -107,7 +107,7 @@ return function(args)
     -- "Prev" at BOTTOM (sortKey "~" sorts last)
     if offset > 0 then
       local prevOffset = math.max(0, offset - fileLimit)
-      local prevAction = "dynamic:obsidian|" .. path .. "," .. limit .. "," .. prevOffset
+      local prevAction = "dynamic:obsidian|" .. vault .. "," .. path .. "," .. limit .. "," .. prevOffset
       items["up"] = {
         label = "↑ Prev",
         action = prevAction,

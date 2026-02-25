@@ -1,6 +1,6 @@
 --- === UrlHandler ===
 ---
---- External URL scheme handler for Hammerflow
+--- External URL scheme handler for Jammerflow
 --- Enables triggering actions via hammerspoon://hammerflow URLs
 ---
 --- Usage:
@@ -172,7 +172,7 @@ function UrlHandler:handleUrlEvent(eventName, params)
     local function reportError(message)
         log.error('url.error', {message = message, params = params})
         if not silent then
-            hs.alert("Hammerflow: " .. message, 3)
+            hs.alert("Jammerflow: " .. message, 3)
         end
     end
 

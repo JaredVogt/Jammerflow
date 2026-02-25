@@ -1,8 +1,8 @@
-# Hammerflow Setup Guide
+# Jammerflow Setup Guide
 
 ## Required System Permissions
 
-For Hammerflow to work properly, you need to grant Hammerspoon specific permissions in macOS System Preferences/Settings.
+For Jammerflow to work properly, you need to grant Hammerspoon specific permissions in macOS System Preferences/Settings.
 
 ### 1. Full Disk Access
 
@@ -19,7 +19,7 @@ Hammerspoon needs Full Disk Access to watch folders and access files across your
 
 ### 2. Notifications
 
-Enable notifications to see alerts for file events and other Hammerflow activities.
+Enable notifications to see alerts for file events and other Jammerflow activities.
 
 **Steps:**
 1. Open **System Preferences** (or **System Settings** on macOS Ventura+)

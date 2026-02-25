@@ -1,4 +1,4 @@
-# Test configuration for Hammerflow Visual Config Editor
+# Test configuration for Jammerflow Visual Config Editor
 # This file tests the basic functionality and URL event handlers
 
 leader_key = "f20"

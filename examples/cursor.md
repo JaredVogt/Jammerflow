@@ -1,6 +1,6 @@
 # Case Study: Dynamic Cursor Window Switcher
 
-This case study demonstrates how to create a dynamic menu in Hammerflow that integrates with external applications and automation tools. We'll build a window switcher for the Cursor editor that passes selected window names to Keyboard Maestro.
+This case study demonstrates how to create a dynamic menu in Jammerflow that integrates with external applications and automation tools. We'll build a window switcher for the Cursor editor that passes selected window names to Keyboard Maestro.
 
 ## The Challenge
 
@@ -71,9 +71,9 @@ Example KM macro actions:
 
 1. **Modular Architecture**: The generator lives in `DynamicMenu/generators/cursor.lua`
 2. **Data Collection**: AppleScript queries System Events for Cursor's window titles
-3. **Dynamic Menu Generation**: Hammerflow creates menu items with auto-assigned shortcuts
+3. **Dynamic Menu Generation**: Jammerflow creates menu items with auto-assigned shortcuts
 4. **Rich Action Format**: Uses the new `{type: "km", macro: "...", variables: {...}}` format
-5. **Selection Handling**: When selected, Hammerflow automatically sets KM variables and triggers the macro
+5. **Selection Handling**: When selected, Jammerflow automatically sets KM variables and triggers the macro
 6. **No Caching**: The cursor generator always fetches fresh data for real-time accuracy
 
 ## Key Techniques
@@ -139,4 +139,4 @@ end)
 
 ## Conclusion
 
-This case study shows how Hammerflow's dynamic menus can bridge different automation tools, creating powerful workflows that adapt to your current context. The combination of Hammerspoon's UI capabilities, AppleScript's system access, and Keyboard Maestro's automation features creates a flexible and extensible system.
+This case study shows how Jammerflow's dynamic menus can bridge different automation tools, creating powerful workflows that adapt to your current context. The combination of Hammerspoon's UI capabilities, AppleScript's system access, and Keyboard Maestro's automation features creates a flexible and extensible system.

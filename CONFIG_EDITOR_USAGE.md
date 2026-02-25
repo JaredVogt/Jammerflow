@@ -1,9 +1,9 @@
-# Hammerflow Visual Config Editor - Usage Guide
+# Jammerflow Visual Config Editor - Usage Guide
 
 ## Quick Start
 
 ### 1. Open the Editor
-Open `/Users/jaredvogt/projects/dotfiles.v2/hammerspoon/Hammerflow/config-editor.html` in your web browser (Chrome/Safari recommended).
+Open `~/.hammerspoon/Spoons/Hammerflow.spoon/config-editor.html` in your web browser (Chrome/Safari recommended).
 
 ### 2. Load Your Config
 - **Drag & Drop**: Drag your existing `config.toml` file onto the editor
@@ -19,7 +19,7 @@ Open `/Users/jaredvogt/projects/dotfiles.v2/hammerspoon/Hammerflow/config-editor
 Click "💾 Save Config" which will:
 1. Download the config file to your Downloads folder
 2. Trigger Hammerspoon to install it automatically
-3. Reload your Hammerflow configuration
+3. Reload your Jammerflow configuration
 
 ## Features Overview
 
@@ -136,7 +136,7 @@ Planned features for future versions:
 ## Support
 
 For issues or questions:
-1. Check the `configplan.md` for detailed technical specs
+1. Check the README.md for detailed documentation
 2. Review Hammerspoon Console logs
 3. Verify all prerequisites are installed
 4. Test with a minimal configuration first

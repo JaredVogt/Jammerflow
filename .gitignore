@@ -1,8 +1,16 @@
 # Personal config (symlinked from dotfiles)
 config.toml
 
-# Internal/Personal docs
-refactor_proposal.md
+# Personal images (symlinked from dotfiles)
+images/Wolff.png
+images/ffemail.gif
+images/bryce2.png
+images/background.gif
+images/background.png
+images/background_frames
+
+# Local tool artifacts
+.factory/
 
 # macOS
 .DS_Store

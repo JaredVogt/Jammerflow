@@ -1,6 +1,6 @@
 --- === DynamicMenu ===
 ---
---- A module for generating dynamic menu items for Hammerflow
+--- A module for generating dynamic menu items for Jammerflow
 --- Generators are loaded from the generators/ directory
 
 local obj = {}
@@ -9,7 +9,7 @@ obj.__index = obj
 -- Metadata
 obj.name = "DynamicMenu"
 obj.version = "2.0"
-obj.author = "Hammerflow Dynamic Menu System"
+obj.author = "Jammerflow Dynamic Menu System"
 obj.license = "MIT"
 
 -- State

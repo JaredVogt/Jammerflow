@@ -1,6 +1,6 @@
-# Hammerspoon/Hammerflow Architecture
+# Hammerspoon/Jammerflow Architecture
 
-This document provides a visual overview of how Hammerspoon, Hammerflow, and all related components interact.
+This document provides a visual overview of how Hammerspoon, Jammerflow, and all related components interact. Note: The Hammerspoon spoon is named `Hammerflow.spoon` for compatibility.
 
 ## System Architecture Diagram
 
@@ -16,7 +16,7 @@ flowchart TB
         Inyo["Inyo Spoon<br/>(Monitoring)"]
     end
 
-    subgraph Hammerflow["Hammerflow Module"]
+    subgraph Hammerflow["Jammerflow Module"]
         HFInit["init.lua<br/>(1,648 lines)"]
 
         subgraph Config["Configuration"]
@@ -169,7 +169,7 @@ flowchart TB
 1. **macOS** launches **Hammerspoon** application
 2. **~/.hammerspoon/init.lua** loads Spoons via `hs.loadSpoon()`
 3. **HTTPRouter** starts HTTP server for web-based config editor
-4. **Hammerflow** initializes and parses TOML configuration
+4. **Jammerflow** initializes and parses TOML configuration
 5. **Inyo** provides monitoring/notification capabilities
 
 ### Configuration Pipeline
@@ -233,9 +233,9 @@ Generators in `DynamicMenu/generators/` create runtime menu items:
 ~/.hammerspoon/
 ├── init.lua                    # Bootstrap - loads Spoons
 └── Spoons/
-    └── Hammerflow.spoon/       # (symlink to Hammerflow/)
+    └── Hammerflow.spoon/       # (symlink to Jammerflow/)
 
-Hammerflow/
+Jammerflow/
 ├── init.lua                    # Main module (1,648 lines)
 ├── config.toml                 # User configuration
 ├── toml_validator.lua          # TOML validation

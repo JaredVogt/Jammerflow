@@ -1,4 +1,4 @@
--- TOML Structure Validator for Hammerflow
+-- TOML Structure Validator for Jammerflow
 -- Validates TOML files before parsing to catch common structural issues
 
 local function validateTomlStructure(filepath)

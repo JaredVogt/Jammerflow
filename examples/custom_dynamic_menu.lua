@@ -1,4 +1,4 @@
--- Example: Creating Custom Dynamic Menu Generators for Hammerflow
+-- Example: Creating Custom Dynamic Menu Generators for Jammerflow
 -- With the new modular architecture, generators are separate files
 
 -- ===========================

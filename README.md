@@ -1,10 +1,12 @@
-# Hammerflow
+# Jammerflow
 
-A powerful Hammerspoon configuration framework for creating leader-key driven shortcuts and window management. Hammerflow provides an intuitive way to bind sequential key combinations to various actions including app launching, URL opening, text insertion, window management, and custom functions.
+A powerful Hammerspoon configuration framework for creating leader-key driven shortcuts and window management. Jammerflow provides an intuitive way to bind sequential key combinations to various actions including app launching, URL opening, text insertion, window management, and custom functions.
+
+> **Note:** Jammerflow is the public release of the Hammerflow project. The Hammerspoon spoon is still named `Hammerflow.spoon` for compatibility — internal code references to the spoon name are intentional. Users can add their own icons by dropping PNGs into the `images/` directory.
 
 ## Overview
 
-Hammerflow consists of three main components:
+Jammerflow consists of three main components:
 
 1. **Main Module** (`init.lua`) - The core framework that parses TOML configuration and sets up keybindings
 2. **Configuration** (`config.toml`) - TOML-based configuration defining your key mappings and actions
@@ -117,7 +119,7 @@ c = "Cursor"  # IGNORED
 p = "Claude"  # IGNORED
 ```
 
-If you place individual keys after table sections, Hammerflow will show a warning and those keys will not work.
+If you place individual keys after table sections, Jammerflow will show a warning and those keys will not work.
 
 ### Action Types
 
@@ -188,7 +190,7 @@ c = "raycast://extensions/raycast/raycast/confetti"
 e = "raycast://extensions/raycast/emoji-symbols/search-emoji-symbols"
 
 # Linear (built-in support)  
-l = "linear://wolffaudio/view/b8ff72ac-1c48-4955-9fda-74870f1d6130"
+l = "linear://myworkspace/view/issue-id-here"
 
 # Other app deep links - requires adding to init.lua
 # See "Adding New Deep Link Support" section below
@@ -213,7 +215,7 @@ Currently supported URL schemes:
 
 ### External URL Scheme Triggering
 
-Hammerflow can be triggered externally via URL schemes, enabling integration with shell scripts, Alfred, Raycast, Keyboard Maestro, and other automation tools.
+Jammerflow can be triggered externally via URL schemes, enabling integration with shell scripts, Alfred, Raycast, Keyboard Maestro, and other automation tools.
 
 **Base URL:** `hammerspoon://hammerflow?<parameters>`
 
@@ -221,7 +223,7 @@ Hammerflow can be triggered externally via URL schemes, enabling integration wit
 
 | Parameter | Description | Example |
 |-----------|-------------|---------|
-| `action` | Raw action string (any Hammerflow action) | `action=chrome:https://google.com` |
+| `action` | Raw action string (any Jammerflow action) | `action=chrome:https://google.com` |
 | `key` | Dot-separated config key path | `key=l.g` (Linear menu → g key) |
 | `label` | Search by display label (case-insensitive) | `label=Calendar` |
 | `query` | Input for `{input}` placeholder substitution | `query=my+search` |
@@ -422,7 +424,7 @@ chord_prefix_keys = ["a", "b", "c"]
 
 ### Built-in Smart Window Example
 
-Hammerflow includes a `smartwindow:` action type that demonstrates the chord system:
+Jammerflow includes a `smartwindow:` action type that demonstrates the chord system:
 
 ```toml
 [9]
@@ -513,7 +515,7 @@ Register custom Lua functions for advanced functionality:
 
 ```lua
 -- In your Hammerspoon init.lua or other file
-local hammerflow = require('Hammerflow')
+local hammerflow = require('Hammerflow')  -- spoon name is still Hammerflow
 
 local myFunctions = {
   toggleDarkMode = function()
@@ -536,7 +538,7 @@ p = "function:openProject|my-project"
 
 ## Icon Support
 
-Hammerflow supports displaying custom icons alongside menu items for better visual identification.
+Jammerflow supports displaying custom icons alongside menu items for better visual identification.
 
 ### Adding Icons
 
@@ -561,11 +563,11 @@ c = ["linear://project/view/other-task", "Other Task", "task.png"]
 
 ### Default Icon Fallback
 
-When no icon is specified for a menu item, Hammerflow automatically uses `generic.png` as a fallback. This ensures consistent vertical alignment of all menu items. You can customize the default appearance by replacing the `generic.png` file in the images directory.
+When no icon is specified for a menu item, Jammerflow automatically uses `generic.png` as a fallback. This ensures consistent vertical alignment of all menu items. You can customize the default appearance by replacing the `generic.png` file in the images directory.
 
 ### Icon Requirements
 
-- **Location**: Place images in the `images/` directory within your Hammerflow folder
+- **Location**: Place images in the `images/` directory within your Jammerflow folder
 - **Size**: 48x48 pixels recommended (any size works, will be scaled to 48x48)
 - **Format**: PNG recommended, JPEG also supported
 - **Encoding**: Images are automatically base64-encoded for webview display
@@ -573,13 +575,13 @@ When no icon is specified for a menu item, Hammerflow automatically uses `generi
 ### Icon Directory Structure
 
 ```
-Hammerflow/
+Jammerflow/
 ├── init.lua
 ├── config.toml
-├── images/              # Icon directory
+├── images/              # Icon directory — drop your own PNGs here
 │   ├── kitty.png       # Terminal icon
 │   ├── github.png      # GitHub icon
-│   ├── bryce.png       # Custom task icon
+│   ├── generic.png     # Default fallback icon
 │   └── gear.png        # Settings icon
 ├── RecursiveBinder/
 │   └── init.lua
@@ -589,7 +591,7 @@ Hammerflow/
 
 ## Label Formatting with HTML
 
-Hammerflow supports HTML formatting in labels when using webview display mode. This allows you to style text with colors, bold, italics, and other HTML formatting.
+Jammerflow supports HTML formatting in labels when using webview display mode. This allows you to style text with colors, bold, italics, and other HTML formatting.
 
 ### Using HTML in Labels
 
@@ -640,10 +642,10 @@ label = ["<span style='color: orange'>[development]</span>", "", "", {layout_mod
 ## File Structure
 
 ```
-Hammerflow/
+Jammerflow/
 ├── init.lua              # Main framework
 ├── config.toml           # Your configuration
-├── images/               # Icon directory (optional)
+├── images/               # Icon directory — add your own icons here
 │   ├── app1.png         # 48x48px icons
 │   └── app2.png
 ├── RecursiveBinder/
@@ -664,7 +666,7 @@ Hammerflow/
 
 ### Display Modes
 
-Hammerflow supports two display modes for showing available shortcuts:
+Jammerflow supports two display modes for showing available shortcuts:
 
 #### Webview Mode (default)
 The modern visual interface with:
@@ -766,7 +768,7 @@ g = "Google"             # Displays and sorts as 'g'
 This system allows complete control over the order items appear in the menu while keeping the actual hotkey simple. The prefix is stripped from the display but used for sorting. This is especially useful for organizing special characters and controlling which items appear first or last.
 
 ### Auto-reload
-When `auto_reload = true`, Hammerflow watches for changes to configuration files and automatically reloads, making development and tweaking very fast.
+When `auto_reload = true`, Jammerflow watches for changes to configuration files and automatically reloads, making development and tweaking very fast.
 
 ### Multiple Configuration Files
 The framework can load from multiple TOML files in priority order. Modify the file loading in your main Hammerspoon config to specify which files to search for.
@@ -786,7 +788,7 @@ label = "[searches]"
 g = ["input:https://google.com/search?q={input}", "Google Search"]
 # To target specific Google accounts, add &authuser=email%40domain.com
 w = ["input:https://drive.google.com/drive/search?q={input}&authuser=work%40company.com", "Work Drive"]
-j = ["input:https://drive.google.com/drive/search?q={input}&authuser=personal%40gmail.com", "Personal Drive"]
+j = ["input:https://drive.google.com/drive/search?q={input}&authuser=user%40example.com", "Personal Drive"]
 ```
 
 ### Search History
@@ -809,14 +811,14 @@ Dynamic menus allow you to generate menu items at runtime based on lookups, API 
 
 ### How It Works
 
-1. When you press a key bound to a `dynamic:` action, Hammerflow calls the specified generator
+1. When you press a key bound to a `dynamic:` action, Jammerflow calls the specified generator
 2. The generator returns a list of items (e.g., "dog", "cat", "bird")
-3. Hammerflow automatically assigns shortcuts (a, b, c, etc.) to each item
+3. Jammerflow automatically assigns shortcuts (a, b, c, etc.) to each item
 4. The submenu is displayed with the generated items
 
 ### Built-in Generators
 
-Hammerflow includes several built-in dynamic menu generators located in `DynamicMenu/generators/`:
+Jammerflow includes several built-in dynamic menu generators located in `DynamicMenu/generators/`:
 
 - **`cursor`** - Show Cursor editor windows (integrates with Keyboard Maestro)
 - **`kitty`** - Show Kitty terminal windows
@@ -866,7 +868,7 @@ action = ["dynamic:obsidian|ProPatch Manual/web-manual/docs", "ProPatch Manual",
 
 ### Browser Tab Generators
 
-Hammerflow includes specialized generators for managing browser tabs, allowing you to quickly switch between tabs matching specific patterns.
+Jammerflow includes specialized generators for managing browser tabs, allowing you to quickly switch between tabs matching specific patterns.
 
 #### Chrome/Canary Tab Switcher (`chrome`)
 
@@ -905,7 +907,7 @@ label = "All Canary Tabs"
 
 **Special Display Formatting:**
 - **Gmail tabs** (`mail.google.com`): Displays just the email address extracted from the tab title
-  - Example: `jared@wolffaudio.com` instead of `Inbox (3,650) - jared@wolffaudio.com - Wolff Audio Mail`
+  - Example: `user@company.com` instead of `Inbox (3,650) - user@company.com - Company Mail`
 - **Other tabs**: Displays `Title — domain.com`
 
 #### Claude Web Tab Finder (`claude_web`)
@@ -944,7 +946,7 @@ The `gemini` generator enables fast switching between Google Gemini conversation
 2. `account` - Google account email (optional, for account-specific URLs)
 
 **Examples:**
-- `dynamic:gemini|canary,jared.vogt@gmail.com` - Canary with specific account
+- `dynamic:gemini|canary,user@example.com` - Canary with specific account
 - `dynamic:gemini|chrome,user@example.com` - Chrome with specific account
 - `dynamic:gemini|,user@example.com` - Default browser with account
 - `dynamic:gemini` - Default browser, no account specified
@@ -958,7 +960,7 @@ The `gemini` generator enables fast switching between Google Gemini conversation
 **Example:**
 ```toml
 [m]
-action = "dynamic:gemini|canary,jared.vogt@gmail.com"
+action = "dynamic:gemini|canary,user@example.com"
 label = "Gemini"
 icon = "gemini.png"
 layout_mode = "vertical"

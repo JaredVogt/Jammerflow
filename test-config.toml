@@ -1,0 +1,53 @@
+# Test configuration for Hammerflow Visual Config Editor
+# This file tests the basic functionality and URL event handlers
+
+leader_key = "f20"
+leader_key_mods = ""
+auto_reload = true
+toast_on_reload = true
+show_ui = true
+display_mode = "webview"
+max_grid_columns = 5
+grid_spacing = " | "
+grid_separator = " ▸ "
+
+# Test simple app launch
+t = "Kitty"
+
+# Test URL action
+g = "https://google.com"
+
+# Test custom action with label and icon
+c = ["Cursor", "Code Editor", "cursor.png"]
+
+# Test menu
+[test]
+label = "[test menu]"
+icon = "hammerspoon.png"
+layout_mode = "vertical"
+max_column_height = 8
+
+# Test actions within menu
+k = "Kitty"
+s = ["Safari", "Web Browser", "generic.png"]
+w = "window:left-half"
+
+# Test nested menu
+[test.sub]
+label = "[submenu]"
+x = "text:Hello from nested menu!"
+
+# Test different action types
+[actions]
+label = "[action types]"
+url = "https://example.com"
+win = "window:maximized"
+cmd = "cmd:echo hello"
+txt = "text:test@example.com"
+inp = ["input:https://google.com/search?q={input}", "Search Google"]
+km = "km:Test_Macro"
+
+[background]
+type = "inyo"
+template = "jellyfish"
+opacity = 0.6

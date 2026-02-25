@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hammerflow Config Editor</title>
+    <script type="module" src="vendor/toml-loader.mjs"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'SF Pro Text', system-ui, -apple-system, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            color: #00ff00;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            background: #00ff00;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: #00cc00;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 255, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: #555;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #666;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #ff6666;
+        }
+
+        .editor-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            flex: 0 0 300px;
+            background: #2d2d2d;
+            border-right: 1px solid #444;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #555 #2d2d2d;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        .tree-view {
+            padding: 1rem;
+        }
+
+        .tree-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .tree-section h3 {
+            color: #00ff00;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tree-item {
+            padding: 0.75rem;
+            margin: 0.25rem 0;
+            background: #3d3d3d;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tree-item:hover {
+            background: #4d4d4d;
+            border-left-color: #00ff00;
+        }
+
+        .tree-item.selected {
+            background: #00ff0015;
+            border-left-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+
+        .tree-item.add-new {
+            background: #004400;
+            color: #00ff00;
+            font-weight: 600;
+            justify-content: center;
+        }
+
+        .tree-item.add-new:hover {
+            background: #006600;
+        }
+
+        .tree-item-icon {
+            font-size: 1rem;
+        }
+
+        .tree-item-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tree-item-type {
+            font-size: 0.7rem;
+            color: #888;
+            background: #555;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+
+        .main-editor {
+            flex: 0 0 600px;
+            padding: 1.25rem;
+            overflow-y: auto;
+            background: #1a1a1a;
+        }
+
+        .preview-panel {
+            flex: 1 0 360px;
+            min-width: 320px;
+            background: #2d2d2d;
+            border-left: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-header {
+            padding: 1rem;
+            border-bottom: 1px solid #444;
+            font-weight: 600;
+            background: #333;
+            color: #00ff00;
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        .split-resizer {
+            width: 6px;
+            flex: 0 0 6px;
+            cursor: col-resize;
+            background: #333;
+            border-left: 1px solid #222;
+            border-right: 1px solid #222;
+        }
+
+        body.resizing {
+            cursor: col-resize;
+            user-select: none;
+        }
+
+        .menu-children {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .menu-child-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .menu-child-item:hover {
+            background: #353535;
+        }
+
+        .menu-child-key {
+            font-weight: 600;
+            color: #00ff00;
+            margin-right: 1rem;
+        }
+
+        .menu-child-value {
+            flex: 1;
+            font-family: 'SF Mono', Monaco, monospace;
+            color: #cfcfcf;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .menu-child-empty {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .backup-panel {
+            margin-top: 1rem;
+            border-top: 1px solid #444;
+            padding-top: 1rem;
+        }
+
+        .backup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .backup-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .backup-item {
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+
+        .backup-item strong {
+            color: #00ff00;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .backup-meta {
+            color: #bbb;
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .backup-empty {
+            color: #999;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .link-button {
+            background: none;
+            border: none;
+            color: #00ff00;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0;
+        }
+
+        .link-button:hover {
+            text-decoration: underline;
+            color: #66ff66;
+        }
+
+        #tomlPreview {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 1rem;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            margin: 0;
+            line-height: 1.4;
+            color: #e0e0e0;
+        }
+
+        .drop-zone {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 255, 0, 0.1);
+            border: 3px dashed #00ff00;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .drop-zone.active {
+            display: flex;
+        }
+
+        .form-group {
+            margin: 1rem 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #00ff00;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #3d3d3d;
+            border: 2px solid #555;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .icon-picker {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #3d3d3d;
+            border-radius: 6px;
+        }
+
+        .icon-option {
+            width: 60px;
+            height: 60px;
+            background: #555;
+            border: 2px solid #666;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .icon-option:hover {
+            border-color: #00ff00;
+            background: #00ff0015;
+        }
+
+        .icon-option.selected {
+            border-color: #00ff00;
+            background: #00ff0025;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 3rem;
+            color: #888;
+        }
+
+        .welcome-screen h2 {
+            color: #00ff00;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .welcome-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .welcome-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .notification.error {
+            background: #ff4444;
+        }
+
+        .notification.info {
+            background: #0088ff;
+        }
+
+        .action-type-forms {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #2d2d2d;
+            border-radius: 6px;
+            border: 1px solid #444;
+        }
+
+        .action-type-form {
+            display: none;
+        }
+
+        .action-type-form.active {
+            display: block;
+        }
+
+        .shortcut-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #444;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+
+        .key-combo {
+            background: #555;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            border: 1px solid #666;
+        }
+
+        .settings-panel {
+            background: #2d2d2d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid #444;
+        }
+
+        .settings-panel h3 {
+            color: #00ff00;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .preview-panel {
+                width: 300px;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .editor-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 200px;
+            }
+
+            .preview-panel {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <h1>🔨 Hammerflow Config Editor</h1>
+            <div class="actions">
+                <button class="btn btn-secondary" onclick="editor.loadFromRouter()" title="Fetch config from HTTPRouter">
+                    🌐 Load Live
+                </button>
+                <button class="btn btn-secondary" onclick="editor.validateWithRouter()" title="Validate current config via HTTPRouter">
+                    ✅ Validate
+                </button>
+                <button class="btn btn-secondary" onclick="editor.fetchBackups()" title="List Hammerspoon backups">
+                    🗂️ Backups
+                </button>
+                <button class="btn btn-secondary" onclick="editor.createBackup()" title="Create backup of current config">
+                    📦 Create Backup
+                </button>
+                <button class="btn btn-secondary" onclick="editor.exportConfig()" title="Download current config">
+                    📤 Export
+                </button>
+                <button class="btn" onclick="editor.saveConfig()" title="Save config via Hammerspoon">
+                    💾 Save Config
+                </button>
+            </div>
+        </header>
+
+        <div class="editor-container">
+            <aside class="sidebar">
+                <div class="tree-view" id="menuTree">
+                    <div class="tree-section">
+                        <h3>Settings</h3>
+                        <div class="tree-item" onclick="editor.selectGlobalSettings()">
+                            <span class="tree-item-icon">⚙️</span>
+                            <span class="tree-item-text">Global Settings</span>
+                        </div>
+                    </div>
+
+                    <div class="tree-section">
+                        <h3>Menus & Actions</h3>
+                        <div class="tree-item add-new" onclick="editor.addNewItem()">
+                            <span class="tree-item-icon">➕</span>
+                            <span class="tree-item-text">Add New Item</span>
+                        </div>
+                        <div id="configItems"></div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-editor" id="mainEditor">
+                <div class="welcome-screen">
+                    <h2>Welcome to Hammerflow Config Editor</h2>
+                    <p>Create and edit your Hammerflow configuration with this visual editor.<br>
+                    Drag and drop your existing config.toml file to get started, or create a new configuration from scratch.</p>
+
+                    <div class="welcome-actions">
+                        <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                            📁 Load Config File
+                        </button>
+                        <button class="btn" onclick="editor.createNewConfig()">
+                            ✨ Create New Config
+                        </button>
+                    </div>
+
+                    <input type="file" id="fileInput" accept=".toml" style="display: none;" onchange="editor.handleFileSelect(event)">
+                </div>
+            </main>
+
+            <div class="split-resizer" id="editorResizer"></div>
+
+            <aside class="preview-panel" id="previewPanel">
+                <div class="preview-header">
+                    📋 TOML Preview
+                </div>
+                <div class="preview-content">
+                    <pre id="tomlPreview"># Generated TOML will appear here
+# Drag a config.toml file or create a new configuration to begin</pre>
+                    <div class="backup-panel">
+                        <div class="backup-header">
+                            <span>🗂️ Backups</span>
+                            <button class="link-button" onclick="editor.fetchBackups()">Refresh</button>
+                        </div>
+                        <div id="backupList" class="backup-list">
+                            <p class="backup-empty">Use 🗂️ Backups to load saved snapshots.</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <div id="dropZone" class="drop-zone">
+            📁 Drop config.toml here to load
+        </div>
+    </div>
+
+    <script>
+        class HammerflowConfigEditor {
+            constructor() {
+                this.config = {
+                    leader_key: "f20",
+                    leader_key_mods: "",
+                    auto_reload: true,
+                    toast_on_reload: true,
+                    show_ui: true,
+                    display_mode: "webview",
+                    max_grid_columns: 5,
+                    grid_spacing: " | ",
+                    grid_separator: " ▸ "
+                };
+                this.selectedItem = null;
+                this.selectedPath = [];
+                this.history = [];
+                this.historyIndex = -1;
+                this.availableIcons = [
+                    "generic.png", "hammerspoon.png", "claude.png", "chatgpt.png",
+                    "cursor.png", "kitty.png", "linear.png", "obsidian.png",
+                    "calendar.webp", "1password.png", "voicememo.png", "asana.png",
+                    "dots.png", "bryce2.png", "Wolff.png", "windsurf.png"
+                ];
+                this.menuMetaKeys = new Set([
+                    'label', 'icon', 'layout_mode', 'max_column_height', 'entry_length',
+                    'background_image', 'background_opacity', 'background_position',
+                    'background_size', 'background', 'action'
+                ]);
+                this.resizerInitialized = false;
+                this.mainWidth = null;
+                this.previewWidth = null;
+
+                this.backups = [];
+                this.routerLastUpdated = null;
+
+                this.init();
+            }
+
+            init() {
+                this.setupDragDrop();
+                this.setupKeyboardShortcuts();
+                this.setupResizableEditor();
+                this.render();
+                this.showNotification('Config editor loaded. Drop a .toml file or create new config.', 'info');
+            }
+
+            setupDragDrop() {
+                const dropZone = document.getElementById('dropZone');
+                const body = document.body;
+
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    body.addEventListener(eventName, this.preventDefaults, false);
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    body.addEventListener(eventName, () => {
+                        dropZone.classList.add('active');
+                    }, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    body.addEventListener(eventName, () => {
+                        dropZone.classList.remove('active');
+                    }, false);
+                });
+
+                body.addEventListener('drop', this.handleDrop.bind(this), false);
+            }
+
+            preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            setupResizableEditor() {
+                const container = document.querySelector('.editor-container');
+                const sidebar = document.querySelector('.sidebar');
+                const resizer = document.getElementById('editorResizer');
+                const main = document.getElementById('mainEditor');
+                const preview = document.getElementById('previewPanel');
+
+                if (!container || !sidebar || !resizer || !main || !preview) {
+                    return;
+                }
+
+                const minMain = 600;
+                const minPreview = 320;
+
+                const computeAvailable = () => {
+                    const containerRect = container.getBoundingClientRect();
+                    const sidebarRect = sidebar.getBoundingClientRect();
+                    const resizerWidth = resizer.getBoundingClientRect().width || 6;
+                    return {
+                        available: containerRect.width - sidebarRect.width - resizerWidth,
+                        resizerWidth
+                    };
+                };
+
+                const ensureDefaults = () => {
+                    const { available } = computeAvailable();
+                    if (available <= 0) {
+                        return;
+                    }
+                    if (this.mainWidth === null || this.previewWidth === null) {
+                        let mainWidth = Math.max(minMain, available / 2);
+                        let previewWidth = available - mainWidth;
+                        if (previewWidth < minPreview) {
+                            previewWidth = minPreview;
+                            mainWidth = available - previewWidth;
+                        }
+                        if (mainWidth < minMain) {
+                            mainWidth = minMain;
+                            previewWidth = Math.max(minPreview, available - mainWidth);
+                        }
+                        this.mainWidth = Math.max(minMain, mainWidth);
+                        this.previewWidth = Math.max(minPreview, previewWidth);
+                    }
+                };
+
+                const applyWidths = (forceDefaults = false) => {
+                    const { available } = computeAvailable();
+                    if (available <= 0) return;
+
+                    if (forceDefaults) {
+                        this.mainWidth = null;
+                        this.previewWidth = null;
+                        ensureDefaults();
+                    }
+
+                    let mainWidth = Math.max(minMain, this.mainWidth || minMain);
+                    let previewWidth = Math.max(minPreview, this.previewWidth || 0);
+
+                    if (available <= minMain + minPreview) {
+                        mainWidth = Math.max(minMain, available - minPreview);
+                        previewWidth = Math.max(minPreview, available - mainWidth);
+                    }
+
+                    if (previewWidth < minPreview) {
+                        previewWidth = minPreview;
+                        mainWidth = available - previewWidth;
+                    }
+                    if (mainWidth < minMain) {
+                        mainWidth = minMain;
+                        previewWidth = Math.max(minPreview, available - mainWidth);
+                    }
+
+                    this.mainWidth = Math.max(minMain, mainWidth);
+                    this.previewWidth = Math.max(minPreview, previewWidth);
+
+                    main.style.flex = `0 0 ${this.mainWidth}px`;
+                    preview.style.flex = `0 0 ${this.previewWidth}px`;
+                    preview.style.minWidth = `${minPreview}px`;
+                };
+
+                ensureDefaults();
+
+                if (!this.resizerInitialized) {
+                    let isDragging = false;
+
+                    const startDrag = (event) => {
+                        isDragging = true;
+                        document.body.classList.add('resizing');
+                        event.preventDefault();
+                    };
+
+                    const handleDrag = (event) => {
+                        if (!isDragging) return;
+
+                        const containerRect = container.getBoundingClientRect();
+                        const sidebarRect = sidebar.getBoundingClientRect();
+                        const { available } = computeAvailable();
+
+                        if (available <= minMain + minPreview) {
+                            return;
+                        }
+
+                        let mainWidth = event.clientX - containerRect.left - sidebarRect.width;
+                        mainWidth = Math.max(minMain, Math.min(mainWidth, available - minPreview));
+
+                        let previewWidth = available - mainWidth;
+                        if (previewWidth < minPreview) {
+                            previewWidth = minPreview;
+                            mainWidth = available - previewWidth;
+                        }
+
+                        this.mainWidth = mainWidth;
+                        this.previewWidth = previewWidth;
+                        applyWidths();
+                    };
+
+                    const stopDrag = () => {
+                        if (!isDragging) return;
+                        isDragging = false;
+                        document.body.classList.remove('resizing');
+                        applyWidths();
+                    };
+
+                    resizer.addEventListener('mousedown', startDrag);
+                    window.addEventListener('mousemove', handleDrag);
+                    window.addEventListener('mouseup', stopDrag);
+                    window.addEventListener('resize', () => applyWidths(true));
+
+                    this.resizerInitialized = true;
+                }
+
+                applyWidths(this.mainWidth === null || this.previewWidth === null);
+            }
+
+            handleDrop(e) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.name.endsWith('.toml')) {
+                        this.loadConfigFile(file);
+                    } else {
+                        this.showNotification('Please drop a .toml file', 'error');
+                    }
+                }
+            }
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.loadConfigFile(file);
+                }
+            }
+
+            getToml() {
+                const candidate = window.TOML || window.toml || window.Toml || window.tomljs;
+                if (candidate && typeof candidate.parse === 'function' && typeof candidate.stringify === 'function') {
+                    return candidate;
+                }
+                throw new Error('TOML parser unavailable. Verify toml-browser bundle loaded.');
+            }
+
+            loadConfigFile(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const content = e.target.result;
+                        const toml = this.getToml();
+                        this.config = toml.parse(content);
+                        this.saveToHistory();
+                        this.render();
+                        this.showNotification(`Config loaded: ${file.name}`, 'success');
+                    } catch (error) {
+                        this.showNotification('Failed to parse TOML: ' + error.message, 'error');
+                        console.error('TOML Parse Error:', error);
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            createNewConfig() {
+                this.config = {
+                    leader_key: "f20",
+                    leader_key_mods: "",
+                    auto_reload: true,
+                    toast_on_reload: true,
+                    show_ui: true,
+                    display_mode: "webview",
+                    max_grid_columns: 5,
+                    grid_spacing: " | ",
+                    grid_separator: " ▸ "
+                };
+                this.selectedItem = null;
+                this.selectedPath = [];
+                this.saveToHistory();
+                this.render();
+                this.selectGlobalSettings();
+                this.showNotification('New config created', 'success');
+            }
+
+            saveConfig() {
+                try {
+                    const tomlContent = this.generateTOML();
+                    const timestamp = Date.now();
+                    const filename = `hammerflow-config-${timestamp}.toml`;
+
+                    // Download file to Downloads
+                    const blob = new Blob([tomlContent], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    // Trigger Hammerspoon installation
+                    setTimeout(() => {
+                        window.location.href = `hammerspoon://hammerflow_install?file=${filename}`;
+                    }, 1000);
+
+                    this.showNotification('Config saved! Installing via Hammerspoon...', 'success');
+                } catch (error) {
+                    this.showNotification('Failed to save config: ' + error.message, 'error');
+                    console.error('Save Error:', error);
+                }
+            }
+
+            generateTOML() {
+                try {
+                    // Create a clean copy of config for TOML generation
+                    const cleanConfig = JSON.parse(JSON.stringify(this.config));
+
+                    // Remove any editor-specific properties
+                    delete cleanConfig._editorMetadata;
+
+                    const toml = this.getToml();
+                    return toml.stringify(cleanConfig);
+                } catch (error) {
+                    throw new Error('Failed to generate TOML: ' + error.message);
+                }
+            }
+
+            createBackup() {
+                window.location.href = 'hammerspoon://hammerflow_backup';
+                this.showNotification('Creating backup...', 'info');
+                setTimeout(() => this.fetchBackups(true), 1500);
+            }
+
+            exportConfig() {
+                try {
+                    const tomlContent = this.generateTOML();
+                    const blob = new Blob([tomlContent], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'hammerflow-config.toml';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    this.showNotification('Config exported', 'success');
+                } catch (error) {
+                    this.showNotification('Export failed: ' + error.message, 'error');
+                }
+            }
+
+            async loadFromRouter() {
+                try {
+                    const response = await fetch('http://localhost:8888/hammerflow/config', { cache: 'no-store' });
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const tomlContent = await response.text();
+                    let parsedConfig;
+                    try {
+                        const toml = this.getToml();
+                        parsedConfig = toml.parse(tomlContent);
+                    } catch (parseError) {
+                        throw new Error('Parse error: ' + parseError.message);
+                    }
+
+                    this.config = parsedConfig;
+                    this.selectedItem = null;
+                    this.selectedPath = [];
+                    this.saveToHistory();
+                    this.render();
+                    await this.fetchBackups(true);
+                    this.showNotification('Loaded config from Hammerspoon', 'success');
+                } catch (error) {
+                    console.error('Load Live Error:', error);
+                    this.showNotification('Failed to load from HTTPRouter: ' + error.message, 'error');
+                }
+            }
+
+            async validateWithRouter() {
+                try {
+                    const tomlContent = this.generateTOML();
+                    const response = await fetch('http://localhost:8888/hammerflow/validate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: tomlContent
+                    });
+
+                    let result = {};
+                    try {
+                        result = await response.json();
+                    } catch (jsonError) {
+                        console.error('Validation JSON parse error:', jsonError);
+                    }
+
+                    if (response.ok && result && result.valid) {
+                        this.showNotification('Validation succeeded via HTTPRouter', 'success');
+                    } else {
+                        const message = result && result.error ? result.error : `HTTP ${response.status}`;
+                        this.showNotification('Validation failed: ' + message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Validation Error:', error);
+                    this.showNotification('Validation request failed: ' + error.message, 'error');
+                }
+            }
+
+            async fetchBackups(silent = false) {
+                try {
+                    const response = await fetch('http://localhost:8888/hammerflow/backups', { cache: 'no-store' });
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    this.backups = Array.isArray(data.backups) ? data.backups : [];
+                    this.renderBackupList();
+
+                    if (!silent) {
+                        const count = this.backups.length;
+                        this.showNotification(`Loaded ${count} backup${count === 1 ? '' : 's'}`, 'success');
+                    }
+                    return true;
+                } catch (error) {
+                    console.error('Backups Error:', error);
+                    this.backups = [];
+                    this.renderBackupList();
+                    if (!silent) {
+                        this.showNotification('Failed to load backups: ' + error.message, 'error');
+                    }
+                    return false;
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                // Remove existing notifications
+                const existing = document.querySelector('.notification');
+                if (existing) {
+                    existing.remove();
+                }
+
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => notification.classList.add('show'), 100);
+
+                // Hide notification after 4 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
+            }
+
+            formatBytes(bytes) {
+                if (typeof bytes !== 'number' || Number.isNaN(bytes)) return '0 B';
+                if (bytes < 1024) return `${bytes} B`;
+                const kb = bytes / 1024;
+                if (kb < 1024) return `${kb.toFixed(1)} KB`;
+                const mb = kb / 1024;
+                return `${mb.toFixed(1)} MB`;
+            }
+
+            renderBackupList() {
+                const container = document.getElementById('backupList');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                if (!this.backups || this.backups.length === 0) {
+                    container.innerHTML = '<p class="backup-empty">No backups loaded. Use 🗂️ Backups to refresh.</p>';
+                    return;
+                }
+
+                this.backups.forEach((backup) => {
+                    const item = document.createElement('div');
+                    item.className = 'backup-item';
+
+                    const title = document.createElement('strong');
+                    title.textContent = backup.timestamp || backup.filename || 'backup';
+                    item.appendChild(title);
+
+                    const meta = document.createElement('span');
+                    meta.className = 'backup-meta';
+                    const size = typeof backup.size === 'number' ? this.formatBytes(backup.size) : 'unknown';
+                    meta.textContent = `${backup.modified || 'unknown'} • ${size}`;
+                    item.appendChild(meta);
+
+                    const code = document.createElement('code');
+                    code.textContent = backup.filename || 'config.toml';
+                    item.appendChild(code);
+
+                    container.appendChild(item);
+                });
+            }
+
+            render() {
+                this.renderMenuTree();
+                this.renderTOMLPreview();
+                this.renderBackupList();
+
+                if (!this.selectedItem) {
+                    this.renderWelcomeScreen();
+                } else {
+                    this.renderEditor();
+                    this.highlightTreePath(this.selectedPath);
+                }
+
+                this.setupResizableEditor();
+            }
+
+            renderWelcomeScreen() {
+                const editor = document.getElementById('mainEditor');
+                if (Object.keys(this.config).length <= 8) { // Only basic settings
+                    editor.innerHTML = `
+                        <div class="welcome-screen">
+                            <h2>Welcome to Hammerflow Config Editor</h2>
+                            <p>Create and edit your Hammerflow configuration with this visual editor.<br>
+                            Drag and drop your existing config.toml file to get started, or create a new configuration from scratch.</p>
+
+                            <div class="welcome-actions">
+                                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+                                    📁 Load Config File
+                                </button>
+                                <button class="btn" onclick="editor.loadFromRouter()">
+                                    🌐 Load Live Config
+                                </button>
+                                <button class="btn" onclick="editor.createNewConfig()">
+                                    ✨ Create New Config
+                                </button>
+                            </div>
+
+                            <input type="file" id="fileInput" accept=".toml" style="display: none;" onchange="editor.handleFileSelect(event)">
+                        </div>
+                    `;
+                }
+            }
+
+            renderMenuTree() {
+                const configItems = document.getElementById('configItems');
+                configItems.innerHTML = '';
+
+                this.renderConfigItems(this.config, configItems, []);
+            }
+
+            renderConfigItems(obj, container, path) {
+                Object.keys(obj).forEach(key => {
+                    if (this.isConfigProperty(key) || this.isMenuMetaKey(key)) return;
+
+                    const value = obj[key];
+                    const currentPath = [...path, key];
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'tree-item';
+                    itemDiv.style.marginLeft = (path.length * 20) + 'px';
+                    itemDiv.dataset.path = this.encodePath(currentPath);
+
+                    if (typeof value === 'object' && !Array.isArray(value)) {
+                        // It's a submenu
+                        const label = value.label || `[${key}]`;
+                        itemDiv.innerHTML = `
+                            <span class="tree-item-icon">📁</span>
+                            <span class="tree-item-text">${label}</span>
+                            <span class="tree-item-type">menu</span>
+                        `;
+                        itemDiv.onclick = (evt) => this.selectItem(key, value, 'menu', currentPath, evt.currentTarget);
+                        container.appendChild(itemDiv);
+
+                        // Render child items
+                        this.renderConfigItems(value, container, currentPath);
+                    } else {
+                        // It's an action
+                        const actionType = this.getActionType(value);
+                        const label = Array.isArray(value) && value[1] ? value[1] : this.getActionLabel(value);
+
+                        itemDiv.innerHTML = `
+                            <span class="tree-item-icon">⚡</span>
+                            <span class="tree-item-text">${key}: ${label}</span>
+                            <span class="tree-item-type">${actionType}</span>
+                        `;
+                        itemDiv.onclick = (evt) => this.selectItem(key, value, 'action', currentPath, evt.currentTarget);
+                        container.appendChild(itemDiv);
+                    }
+                });
+            }
+
+            encodePath(path = []) {
+                return path.map(part => encodeURIComponent(part)).join('>');
+            }
+
+            getValueAtPath(path = []) {
+                return path.reduce((acc, part) => (
+                    acc && acc[part] !== undefined ? acc[part] : undefined
+                ), this.config);
+            }
+
+            highlightTreePath(path = [], fallbackElement = null) {
+                document.querySelectorAll('.tree-item.selected').forEach(item => item.classList.remove('selected'));
+
+                let element = fallbackElement;
+                if (!element && path && path.length) {
+                    const selector = `.tree-item[data-path="${this.encodePath(path)}"]`;
+                    element = document.querySelector(selector);
+                }
+                if (element) {
+                    element.classList.add('selected');
+                }
+            }
+
+            isConfigProperty(key) {
+                const configProps = [
+                    'leader_key', 'leader_key_mods', 'auto_reload', 'toast_on_reload',
+                    'show_ui', 'display_mode', 'max_grid_columns', 'grid_spacing',
+                    'grid_separator', 'layout_mode', 'max_column_height', 'background',
+                    'label', 'icon', 'apps', 'entry_length'
+                ];
+                return configProps.includes(key);
+            }
+
+            getActionType(value) {
+                if (typeof value === 'string') {
+                    if (value.startsWith('http')) return 'URL';
+                    if (value.startsWith('window:')) return 'Window';
+                    if (value.startsWith('cmd:')) return 'Command';
+                    if (value.startsWith('text:')) return 'Text';
+                    if (value.startsWith('input:')) return 'Input';
+                    if (value.startsWith('km:')) return 'KM';
+                    if (value.startsWith('dynamic:')) return 'Dynamic';
+                    if (value === 'reload') return 'Reload';
+                    return 'App';
+                }
+                if (Array.isArray(value)) return 'Custom';
+                return 'Unknown';
+            }
+
+            getActionLabel(value) {
+                if (typeof value === 'string') {
+                    if (value.startsWith('http')) {
+                        try {
+                            return new URL(value).hostname;
+                        } catch {
+                            return value.substring(0, 30) + '...';
+                        }
+                    }
+                    return value.length > 30 ? value.substring(0, 30) + '...' : value;
+                }
+                return 'Custom Action';
+            }
+
+            selectItem(key, value, type, path, sourceElement = null) {
+                this.selectedItem = { key, value, type };
+                this.selectedPath = path;
+
+                this.highlightTreePath(path, sourceElement);
+                this.renderEditor();
+            }
+
+            selectGlobalSettings() {
+                this.selectedItem = { key: 'settings', value: this.config, type: 'settings' };
+                this.selectedPath = [];
+                const element = document.querySelector('.tree-item[onclick*="selectGlobalSettings"]');
+                this.highlightTreePath([], element);
+                this.renderEditor();
+            }
+
+            addNewItem() {
+                const key = prompt('Enter key for new item (e.g., "k" for hotkey k):');
+                if (!key) return;
+
+                const type = prompt('Enter type (app/url/menu):', 'app');
+                if (!type) return;
+
+                if (type === 'menu') {
+                    this.config[key] = {
+                        label: `[${key}]`
+                    };
+                } else if (type === 'app') {
+                    const appName = prompt('Enter application name:', 'App Name');
+                    this.config[key] = appName || 'App Name';
+                } else if (type === 'url') {
+                    const url = prompt('Enter URL:', 'https://');
+                    this.config[key] = url || 'https://';
+                }
+
+                this.saveToHistory();
+                this.render();
+                this.showNotification(`Added new ${type}: ${key}`, 'success');
+            }
+
+            renderEditor() {
+                const editor = document.getElementById('mainEditor');
+
+                if (!this.selectedItem) {
+                    this.renderWelcomeScreen();
+                    return;
+                }
+
+                if (this.selectedItem.type === 'settings') {
+                    this.renderGlobalSettingsEditor();
+                } else if (this.selectedItem.type === 'menu') {
+                    this.renderMenuEditor();
+                } else {
+                    this.renderActionEditor();
+                }
+            }
+
+            renderGlobalSettingsEditor() {
+                const editor = document.getElementById('mainEditor');
+                editor.innerHTML = `
+                    <h2>⚙️ Global Settings</h2>
+
+                    <div class="settings-panel">
+                        <h3>Basic Configuration</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Leader Key:</label>
+                                <select onchange="editor.updateGlobalSetting('leader_key', this.value)">
+                                    <option value="f17" ${this.config.leader_key === 'f17' ? 'selected' : ''}>F17</option>
+                                    <option value="f18" ${this.config.leader_key === 'f18' ? 'selected' : ''}>F18</option>
+                                    <option value="f19" ${this.config.leader_key === 'f19' ? 'selected' : ''}>F19</option>
+                                    <option value="f20" ${this.config.leader_key === 'f20' ? 'selected' : ''}>F20</option>
+                                    <option value="f21" ${this.config.leader_key === 'f21' ? 'selected' : ''}>F21</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Display Mode:</label>
+                                <select onchange="editor.updateGlobalSetting('display_mode', this.value)">
+                                    <option value="webview" ${this.config.display_mode === 'webview' ? 'selected' : ''}>Webview</option>
+                                    <option value="text" ${this.config.display_mode === 'text' ? 'selected' : ''}>Text</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Max Grid Columns:</label>
+                                <input type="number" min="1" max="10" value="${this.config.max_grid_columns || 5}"
+                                       onchange="editor.updateGlobalSetting('max_grid_columns', parseInt(this.value))">
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" ${this.config.auto_reload ? 'checked' : ''}
+                                           onchange="editor.updateGlobalSetting('auto_reload', this.checked)">
+                                    Auto Reload
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Grid Spacing:</label>
+                            <input type="text" value="${this.config.grid_spacing || ' | '}"
+                                   onchange="editor.updateGlobalSetting('grid_spacing', this.value)">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Grid Separator:</label>
+                            <input type="text" value="${this.config.grid_separator || ' ▸ '}"
+                                   onchange="editor.updateGlobalSetting('grid_separator', this.value)">
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderActionEditor() {
+                const editor = document.getElementById('mainEditor');
+                const { key, value, type } = this.selectedItem;
+
+                editor.innerHTML = `
+                    <h2>⚡ Edit Action: ${key}</h2>
+
+                    <div class="form-group">
+                        <label>Action Type:</label>
+                        <select id="actionType" onchange="editor.updateActionType()">
+                            <option value="app">Launch App</option>
+                            <option value="url">Open URL</option>
+                            <option value="window">Window Management</option>
+                            <option value="command">Run Command</option>
+                            <option value="text">Type Text</option>
+                            <option value="input">Input Dialog</option>
+                            <option value="km">Keyboard Maestro</option>
+                            <option value="dynamic">Dynamic Menu</option>
+                            <option value="custom">Custom (Array)</option>
+                        </select>
+                    </div>
+
+                    <div id="actionForm"></div>
+
+                    <div class="form-group" style="margin-top: 2rem;">
+                        <button class="btn" onclick="editor.saveCurrentAction()">💾 Save Changes</button>
+                        <button class="btn btn-danger" onclick="editor.deleteCurrentAction()">🗑️ Delete</button>
+                    </div>
+                `;
+
+                // Set current action type and render form
+                this.updateActionType();
+            }
+
+            renderMenuEditor() {
+                const editor = document.getElementById('mainEditor');
+                const { key, value } = this.selectedItem;
+                const menuValue = value || {};
+
+                const iconOptions = this.availableIcons.slice();
+                if (menuValue.icon && !iconOptions.includes(menuValue.icon)) {
+                    iconOptions.unshift(menuValue.icon);
+                }
+
+                const childKeys = Object.keys(menuValue)
+                    .filter(childKey => !this.isMenuMetaKey(childKey))
+                    .sort((a, b) => a.localeCompare(b));
+
+                const childListHtml = childKeys.length
+                    ? childKeys.map(childKey => {
+                        const encodedKey = encodeURIComponent(childKey);
+                        const preview = this.escapeHtml(this.formatValuePreview(menuValue[childKey]));
+                        return `
+                            <div class="menu-child-item" data-child="${encodedKey}" onclick="editor.navigateToChild('${encodedKey}')">
+                                <span class="menu-child-key">${this.escapeHtml(childKey)}</span>
+                                <span class="menu-child-value">${preview}</span>
+                            </div>
+                        `;
+                    }).join('')
+                    : '<p class="menu-child-empty">No menu items yet. Use “Add Item to Menu”.</p>';
+
+                editor.innerHTML = `
+                    <h2>📁 Edit Menu: ${key}</h2>
+
+                    <div class="form-group">
+                        <label>Menu Label:</label>
+                        <input type="text" value="${menuValue.label || `[${key}]`}"
+                               onchange="editor.updateMenuProperty('label', this.value)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Action (optional):</label>
+                        <input type="text" value="${menuValue.action || ''}" placeholder="e.g. dynamic:kitty, window:left-half"
+                               onchange="editor.updateMenuProperty('action', this.value)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Icon:</label>
+                        <select onchange="editor.updateMenuProperty('icon', this.value)">
+                            <option value="">No Icon</option>
+                            ${iconOptions.map(icon =>
+                                `<option value="${icon}" ${menuValue.icon === icon ? 'selected' : ''}>${icon}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+
+                    <div class="settings-panel">
+                        <h3>Layout Options</h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Layout Mode:</label>
+                                <select onchange="editor.updateMenuProperty('layout_mode', this.value)">
+                                    <option value="">Default</option>
+                                    <option value="horizontal" ${menuValue.layout_mode === 'horizontal' ? 'selected' : ''}>Horizontal</option>
+                                    <option value="vertical" ${menuValue.layout_mode === 'vertical' ? 'selected' : ''}>Vertical</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Max Column Height:</label>
+                                <input type="number" min="1" max="20" value="${menuValue.max_column_height || ''}"
+                                       placeholder="Default" onchange="editor.updateMenuProperty('max_column_height', parseInt(this.value) || undefined)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-panel">
+                        <h3>Background Options</h3>
+
+                        <div class="form-group">
+                            <label>Background Image:</label>
+                            <input type="text" value="${menuValue.background_image || ''}" placeholder="e.g. kitty.gif"
+                                   onchange="editor.updateMenuProperty('background_image', this.value)">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Background Opacity:</label>
+                                <input type="number" step="0.1" min="0" max="1" value="${menuValue.background_opacity ?? ''}"
+                                       placeholder="Default" onchange="editor.updateMenuProperty('background_opacity', this.value === '' ? undefined : parseFloat(this.value))">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Background Position:</label>
+                                <input type="text" value="${menuValue.background_position || ''}" placeholder="e.g. center center"
+                                       onchange="editor.updateMenuProperty('background_position', this.value)">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Background Size:</label>
+                            <input type="text" value="${menuValue.background_size || ''}" placeholder="e.g. cover, contain, 100% 100%"
+                                   onchange="editor.updateMenuProperty('background_size', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="settings-panel">
+                        <h3>Menu Items</h3>
+                        <div class="menu-children">
+                            ${childListHtml}
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 2rem;">
+                        <button class="btn" onclick="editor.addMenuChild()">➕ Add Item to Menu</button>
+                        <button class="btn btn-danger" onclick="editor.deleteCurrentMenu()">🗑️ Delete Menu</button>
+                    </div>
+                `;
+            }
+
+           updateActionType() {
+                const actionSelector = document.getElementById('actionType');
+                if (!actionSelector) return;
+
+                const detected = this.getActionType(this.selectedItem.value) || 'Custom';
+                const normalized = detected.toLowerCase();
+                actionSelector.value = normalized;
+
+                this.renderActionForm(normalized);
+            }
+
+            renderActionForm(actionType) {
+                const formContainer = document.createElement('div');
+                formContainer.className = 'action-type-forms';
+
+                const value = this.selectedItem.value;
+                let actionValue = '';
+                let customLabel = '';
+                let customIcon = '';
+
+                if (Array.isArray(value)) {
+                    actionValue = value[0] || '';
+                    customLabel = value[1] || '';
+                    customIcon = value[2] || '';
+                } else if (typeof value === 'string') {
+                    actionValue = value;
+                }
+
+                switch (actionType) {
+                    case 'app':
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Application Name:</label>
+                                <input type="text" id="appName" value="${actionValue}" placeholder="e.g. Kitty, Safari, Visual Studio Code">
+                            </div>
+                            <div class="form-group">
+                                <label>Custom Label (optional):</label>
+                                <input type="text" id="customLabel" value="${customLabel}" placeholder="Display name in menu">
+                            </div>
+                            <div class="form-group">
+                                <label>Icon (optional):</label>
+                                <select id="customIcon">
+                                    <option value="">No Icon</option>
+                                    ${this.availableIcons.map(icon =>
+                                        `<option value="${icon}" ${customIcon === icon ? 'selected' : ''}>${icon}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                        `;
+                        break;
+
+                    case 'url':
+                        const urlValue = actionValue.replace(/^(chrome:|safari:|firefox:|edge:)/, '');
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>URL:</label>
+                                <input type="url" id="urlValue" value="${urlValue}" placeholder="https://example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Browser (optional):</label>
+                                <select id="browserType">
+                                    <option value="">Default Browser</option>
+                                    <option value="chrome:" ${actionValue.startsWith('chrome:') ? 'selected' : ''}>Chrome</option>
+                                    <option value="safari:" ${actionValue.startsWith('safari:') ? 'selected' : ''}>Safari</option>
+                                    <option value="firefox:" ${actionValue.startsWith('firefox:') ? 'selected' : ''}>Firefox</option>
+                                    <option value="edge:" ${actionValue.startsWith('edge:') ? 'selected' : ''}>Edge</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Custom Label (optional):</label>
+                                <input type="text" id="customLabel" value="${customLabel}" placeholder="Display name in menu">
+                            </div>
+                        `;
+                        break;
+
+                    case 'window':
+                        const windowAction = actionValue.replace('window:', '');
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Window Action:</label>
+                                <select id="windowAction" onchange="this.nextElementSibling.style.display = this.value === 'custom' ? 'block' : 'none'">
+                                    <option value="left-half" ${windowAction === 'left-half' ? 'selected' : ''}>Left Half</option>
+                                    <option value="right-half" ${windowAction === 'right-half' ? 'selected' : ''}>Right Half</option>
+                                    <option value="center-half" ${windowAction === 'center-half' ? 'selected' : ''}>Center Half</option>
+                                    <option value="maximized" ${windowAction === 'maximized' ? 'selected' : ''}>Maximized</option>
+                                    <option value="fullscreen" ${windowAction === 'fullscreen' ? 'selected' : ''}>Fullscreen</option>
+                                    <option value="custom" ${!['left-half', 'right-half', 'center-half', 'maximized', 'fullscreen'].includes(windowAction) ? 'selected' : ''}>Custom Position</option>
+                                </select>
+                                <input type="text" id="customPosition" value="${windowAction}" placeholder="x,y,width,height (e.g. 0.25,0,0.5,1)"
+                                       style="display: ${!['left-half', 'right-half', 'center-half', 'maximized', 'fullscreen'].includes(windowAction) ? 'block' : 'none'}; margin-top: 0.5rem;">
+                            </div>
+                        `;
+                        break;
+
+                    case 'km':
+                        const kmAction = actionValue.replace('km:', '');
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Keyboard Maestro Macro Name:</label>
+                                <input type="text" id="kmMacro" value="${kmAction}" placeholder="Macro_Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Custom Label (optional):</label>
+                                <input type="text" id="customLabel" value="${customLabel}" placeholder="Display name in menu">
+                            </div>
+                        `;
+                        break;
+
+                    case 'text':
+                        const textValue = actionValue.replace('text:', '');
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Text to Type:</label>
+                                <textarea id="textValue" rows="3" placeholder="Text that will be typed when action is triggered">${textValue}</textarea>
+                            </div>
+                        `;
+                        break;
+
+                    case 'input':
+                        const inputAction = actionValue.replace('input:', '');
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Action Template (use {input} for user input):</label>
+                                <input type="text" id="inputTemplate" value="${inputAction}" placeholder="https://google.com/search?q={input}">
+                            </div>
+                            <div class="form-group">
+                                <label>Prompt Label:</label>
+                                <input type="text" id="customLabel" value="${customLabel}" placeholder="What to ask the user">
+                            </div>
+                        `;
+                        break;
+
+                    case 'command':
+                        const cmdValue = actionValue.replace('cmd:', '');
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Command to Execute:</label>
+                                <input type="text" id="cmdValue" value="${cmdValue}" placeholder="ls -la">
+                            </div>
+                            <div class="form-group">
+                                <label>Custom Label (optional):</label>
+                                <input type="text" id="customLabel" value="${customLabel}" placeholder="Display name in menu">
+                            </div>
+                        `;
+                        break;
+
+                    case 'dynamic': {
+                        const dynamicValue = actionValue.replace('dynamic:', '');
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Dynamic Generator:</label>
+                                <select id="dynamicType">
+                                    <option value="cursor" ${dynamicValue === 'cursor' ? 'selected' : ''}>Cursor Windows</option>
+                                    <option value="kitty" ${dynamicValue === 'kitty' ? 'selected' : ''}>Kitty Windows</option>
+                                    <option value="files" ${dynamicValue.startsWith('files') ? 'selected' : ''}>File Browser</option>
+                                    <option value="git" ${dynamicValue === 'git' ? 'selected' : ''}>Git Branches</option>
+                                    <option value="docker" ${dynamicValue === 'docker' ? 'selected' : ''}>Docker Containers</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Or specify full dynamic action:</label>
+                                <input type="text" id="dynamicRaw" value="${actionValue}" placeholder="dynamic:customGenerator(args)">
+                                <small>Leave blank to use the preset above.</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Custom Label:</label>
+                                <input type="text" id="customLabel" value="${customLabel}" placeholder="Menu title">
+                            </div>
+                        `;
+                        break;
+                    }
+
+                    case 'custom': {
+                        const jsonValue = Array.isArray(value) || (value && typeof value === 'object')
+                            ? JSON.stringify(value, null, 2)
+                            : (typeof value === 'string' ? value : JSON.stringify(value));
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Custom Value (JSON or raw string):</label>
+                                <textarea id="customValue" rows="6">${jsonValue}</textarea>
+                                <small>Enter a JSON array/object or a plain string.</small>
+                            </div>
+                        `;
+                        break;
+                    }
+
+                    default: {
+                        formContainer.innerHTML = `
+                            <div class="form-group">
+                                <label>Action Value:</label>
+                                <textarea id="customValue" rows="4">${typeof actionValue === 'string' ? actionValue : JSON.stringify(actionValue)}</textarea>
+                                <small>Unrecognized action type. Edit the raw value directly.</small>
+                            </div>
+                        `;
+                        break;
+                    }
+                }
+
+                const existingForm = document.querySelector('.action-type-forms');
+                if (existingForm) {
+                    existingForm.replaceWith(formContainer);
+                } else {
+                    document.getElementById('actionForm').appendChild(formContainer);
+                }
+            }
+
+            updateGlobalSetting(key, value) {
+                this.config[key] = value;
+                this.saveToHistory();
+                this.renderTOMLPreview();
+                this.showNotification(`Updated ${key}`, 'success');
+            }
+
+            updateMenuProperty(key, value) {
+                if (this.selectedItem && this.selectedItem.type === 'menu') {
+                    if (typeof value === 'number' && Number.isNaN(value)) {
+                        value = undefined;
+                    }
+                    if (value === undefined || value === '') {
+                        delete this.selectedItem.value[key];
+                    } else {
+                        this.selectedItem.value[key] = value;
+                    }
+                    this.saveToHistory();
+                    this.render();
+                    this.showNotification(`Updated menu ${key}`, 'success');
+                }
+            }
+
+            navigateToChild(encodedKey) {
+                const key = decodeURIComponent(encodedKey);
+                const path = [...(this.selectedPath || []), key];
+                const value = this.getValueAtPath(path);
+                const type = (value && typeof value === 'object' && !Array.isArray(value)) ? 'menu' : 'action';
+                this.selectItem(key, value, type, path);
+            }
+
+            isMenuMetaKey(key) {
+                return this.menuMetaKeys.has(key);
+            }
+
+            escapeHtml(value = '') {
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            formatValuePreview(value) {
+                if (typeof value === 'string') {
+                    return value;
+                }
+                if (Array.isArray(value)) {
+                    return JSON.stringify(value, null, 0);
+                }
+                if (value && typeof value === 'object') {
+                    return JSON.stringify(value, null, 0);
+                }
+                return String(value);
+            }
+
+            saveCurrentAction() {
+                if (!this.selectedItem || this.selectedItem.type !== 'action') return;
+
+                const actionType = document.getElementById('actionType').value;
+                let newValue;
+
+                try {
+                    switch (actionType) {
+                        case 'app':
+                            const appName = document.getElementById('appName').value;
+                            const appLabel = document.getElementById('customLabel').value;
+                            const appIcon = document.getElementById('customIcon').value;
+
+                            if (appLabel || appIcon) {
+                                newValue = [appName, appLabel || appName, appIcon].filter((v, i) => i < 2 || v);
+                            } else {
+                                newValue = appName;
+                            }
+                            break;
+
+                        case 'url':
+                            const urlValue = document.getElementById('urlValue').value;
+                            const browserType = document.getElementById('browserType').value;
+                            const urlLabel = document.getElementById('customLabel').value;
+
+                            const fullUrl = browserType + urlValue;
+                            if (urlLabel) {
+                                newValue = [fullUrl, urlLabel];
+                            } else {
+                                newValue = fullUrl;
+                            }
+                            break;
+
+                        case 'window':
+                            const windowAction = document.getElementById('windowAction').value;
+                            const customPosition = document.getElementById('customPosition').value;
+
+                            newValue = 'window:' + (windowAction === 'custom' ? customPosition : windowAction);
+                            break;
+
+                        case 'km':
+                            const kmMacro = document.getElementById('kmMacro').value;
+                            const kmLabel = document.getElementById('customLabel').value;
+
+                            if (kmLabel) {
+                                newValue = ['km:' + kmMacro, kmLabel];
+                            } else {
+                                newValue = 'km:' + kmMacro;
+                            }
+                            break;
+
+                        case 'text':
+                            newValue = 'text:' + document.getElementById('textValue').value;
+                            break;
+
+                        case 'input':
+                            const inputTemplate = document.getElementById('inputTemplate').value;
+                            const inputLabel = document.getElementById('customLabel').value;
+
+                            if (inputLabel) {
+                                newValue = ['input:' + inputTemplate, inputLabel];
+                            } else {
+                                newValue = 'input:' + inputTemplate;
+                            }
+                            break;
+
+                        case 'command':
+                            const cmdValue = document.getElementById('cmdValue').value;
+                            const cmdLabel = document.getElementById('customLabel').value;
+
+                            if (cmdLabel) {
+                                newValue = ['cmd:' + cmdValue, cmdLabel];
+                            } else {
+                                newValue = 'cmd:' + cmdValue;
+                            }
+                            break;
+
+                        case 'dynamic': {
+                            const dynamicType = document.getElementById('dynamicType').value;
+                            const dynamicRaw = document.getElementById('dynamicRaw').value.trim();
+                            const dynamicLabel = document.getElementById('customLabel').value;
+
+                            let base = dynamicRaw ? (dynamicRaw.startsWith('dynamic:') ? dynamicRaw : `dynamic:${dynamicRaw}`)
+                                                  : `dynamic:${dynamicType}`;
+
+                            if (dynamicLabel) {
+                                newValue = [base, dynamicLabel];
+                            } else {
+                                newValue = base;
+                            }
+                            break;
+                        }
+
+                        case 'custom': {
+                            const raw = document.getElementById('customValue').value.trim();
+                            if (!raw) {
+                                throw new Error('Custom value cannot be empty');
+                            }
+                            try {
+                                newValue = JSON.parse(raw);
+                            } catch (err) {
+                                // Treat as plain string if JSON parse fails
+                                newValue = raw;
+                            }
+                            break;
+                        }
+
+                        default: {
+                            const rawValue = document.getElementById('customValue');
+                            if (!rawValue) {
+                                newValue = actionValue;
+                            } else {
+                                const raw = rawValue.value.trim();
+                                if (!raw) {
+                                    throw new Error('Action value cannot be empty');
+                                }
+                                try {
+                                    newValue = JSON.parse(raw);
+                                } catch (err) {
+                                    newValue = raw;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    // Update the config
+                    this.setValueAtPath(this.config, this.selectedPath, newValue);
+                    this.selectedItem.value = newValue;
+
+                    this.saveToHistory();
+                    this.render();
+                    this.showNotification('Action saved successfully', 'success');
+
+                } catch (error) {
+                    this.showNotification('Failed to save action: ' + error.message, 'error');
+                }
+            }
+
+            deleteCurrentAction() {
+                if (!this.selectedItem) return;
+
+                if (confirm(`Delete ${this.selectedItem.key}?`)) {
+                    this.deleteValueAtPath(this.config, this.selectedPath);
+                    this.selectedItem = null;
+                    this.saveToHistory();
+                    this.render();
+                    this.showNotification('Item deleted', 'success');
+                }
+            }
+
+            deleteCurrentMenu() {
+                this.deleteCurrentAction(); // Same logic
+            }
+
+            setValueAtPath(obj, path, value) {
+                if (path.length === 1) {
+                    obj[path[0]] = value;
+                } else {
+                    const [first, ...rest] = path;
+                    if (!obj[first]) obj[first] = {};
+                    this.setValueAtPath(obj[first], rest, value);
+                }
+            }
+
+            deleteValueAtPath(obj, path) {
+                if (path.length === 1) {
+                    delete obj[path[0]];
+                } else {
+                    const [first, ...rest] = path;
+                    if (obj[first]) {
+                        this.deleteValueAtPath(obj[first], rest);
+                    }
+                }
+            }
+
+            renderTOMLPreview() {
+                try {
+                    const toml = this.generateTOML();
+                    document.getElementById('tomlPreview').textContent = toml;
+                } catch (error) {
+                    document.getElementById('tomlPreview').textContent = '# Error generating TOML:\n# ' + error.message;
+                }
+            }
+
+            saveToHistory() {
+                this.history = this.history.slice(0, this.historyIndex + 1);
+                this.history.push(JSON.parse(JSON.stringify(this.config)));
+                this.historyIndex = this.history.length - 1;
+
+                // Limit history size
+                if (this.history.length > 50) {
+                    this.history = this.history.slice(-50);
+                    this.historyIndex = this.history.length - 1;
+                }
+            }
+
+            undo() {
+                if (this.historyIndex > 0) {
+                    this.historyIndex--;
+                    this.config = JSON.parse(JSON.stringify(this.history[this.historyIndex]));
+                    this.render();
+                    this.showNotification('Undone', 'info');
+                }
+            }
+
+            redo() {
+                if (this.historyIndex < this.history.length - 1) {
+                    this.historyIndex++;
+                    this.config = JSON.parse(JSON.stringify(this.history[this.historyIndex]));
+                    this.render();
+                    this.showNotification('Redone', 'info');
+                }
+            }
+
+            setupKeyboardShortcuts() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.metaKey || e.ctrlKey) {
+                        switch (e.key) {
+                            case 'z':
+                                e.preventDefault();
+                                if (e.shiftKey) {
+                                    this.redo();
+                                } else {
+                                    this.undo();
+                                }
+                                break;
+                            case 's':
+                                e.preventDefault();
+                                this.saveConfig();
+                                break;
+                            case 'b':
+                                if (e.shiftKey) {
+                                    e.preventDefault();
+                                    this.createBackup();
+                                }
+                                break;
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize the editor when the page loads
+        let editor;
+        document.addEventListener('DOMContentLoaded', () => {
+            editor = new HammerflowConfigEditor();
+        });
+    </script>
+</body>
+</html>

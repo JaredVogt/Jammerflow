@@ -1,0 +1,164 @@
+#################################################
+# Hammerflow Example Configuration
+# Copy this to config.toml and customize!
+# See README.md for full documentation.
+#################################################
+
+# settings
+leader_key = "f20"        # required, the leader key that starts the sequence
+leader_key_mods = ""      # optional, default "", not recommended - a dedicated leader key is better
+                             # supports cmd ctrl alt shift
+auto_reload = true        # optional, default true, reload when any file in this directory is saved
+toast_on_reload = true    # optional, default false, show a toast when the config is reloaded
+show_ui = true            # optional, default true, show the ui with your key maps
+display_mode = "webview"  # optional, default "webview", options: "webview", "text", or "tiles"
+
+# Grid layout options (optional - these are the defaults)
+# layout_mode = "vertical"    # Use vertical layout for all menus
+# max_column_height = 8       # Maximum items per column before wrapping
+max_grid_columns = 5        # Maximum columns (1-10 recommended)
+grid_spacing = " | "        # Spacing between columns
+grid_separator = " ▸ "      # Separator between key and label
+
+# Single keys to open apps
+# Format: key = "AppName" or key = ["action", "label", "icon.png"]
+p = ["Claude", "Claude", "claude.png"]
+1 = ["1Password", "1Password", "1password.png"]
+
+# Dynamic menus - generate items at runtime
+
+# Cursor Windows
+[c]
+action = "dynamic:cursor"
+label = "Cursor Windows"
+layout_mode = "vertical"
+max_column_height = 20
+
+# Kitty Windows
+[k]
+action = "dynamic:kitty"
+label = "Kitty Windows"
+icon = "kitty.png"
+layout_mode = "vertical"
+max_column_height = 8
+
+# Ghostty Windows (optional: pass path to dev .app build)
+[g]
+action = "dynamic:ghostty"
+# action = "dynamic:ghostty|/path/to/custom/Ghostty.app"  # with dev launcher
+label = "Ghostty Windows"
+icon = "ghostty.png"
+display_mode = "tiles"
+tile_columns = 3
+
+# Finder Windows
+[f]
+action = "dynamic:finder"
+label = "finder"
+layout_mode = "vertical"
+max_column_height = 15
+
+# Chrome Tabs - Gmail & Calendar
+[e]
+action = "dynamic:chrome|mail.google|calendar.google,chrome"
+label = "Gmail Chrome"
+icon = "generic.png"
+layout_mode = "vertical"
+max_column_height = 15
+
+# Chrome Tabs - Claude Web (dedicated generator with "New Chat" option)
+[P]
+action = "dynamic:claude_web"
+label = "Claude Web"
+icon = "claude.png"
+layout_mode = "vertical"
+max_column_height = 15
+
+# Hammerflow meta-menu for reload and help
+["z_."]
+label = "[hammerflow]"
+icon = "hammerspoon.png"
+"." = ["reload", "Reload Config", "hammerspoon.png"]
+h = ["code: ~/.hammerspoon/Hammerflow/README.md", "Open README", "hammerspoon.png"]
+
+# Background image configuration (optional)
+# This has to be AFTER individual key definitions
+[background]
+image = "background.gif"       # Image filename in images/ directory
+opacity = 0.6                  # Transparency: 0.0 (invisible) to 1.0 (opaque)
+position = "center center"     # Position: "center center", "top left", "bottom right", etc.
+size = "cover"                 # Size behavior: "cover", "contain", "auto", "100% 100%", etc.
+
+# Groups - nest actions under a leader key sequence
+[l]
+label = "[links]"
+icon = "generic.png"
+layout_mode = "vertical"
+max_column_height = 8
+g = ["https://github.com", "GitHub"]
+l = ["https://linear.app", "Linear", "linear.png"]
+
+[a]
+label = "[apps]"
+layout_mode = "vertical"
+c = ["Calendar", "Calendar", "calendar.webp"]
+1 = ["1Password", "1Password", "1password.png"]
+o = ["Obsidian", "Obsidian", "obsidian.png"]
+
+[b]
+label = "[links]"
+g = "https://github.com"
+
+# Nested groups
+[b.m]
+label = "[me]"
+g = ["https://github.com/saml-dev", "my github"]
+b = ["https://bsky.app/profile/saml.dev", "my bluesky"]
+t = ["https://twitter.com/saml_dev", "my twitter"]
+
+# Raycast deep links
+[t]
+label = "[raycast]"
+c = ["raycast://extensions/raycast/raycast/confetti", "confetti"]
+e = ["raycast://extensions/raycast/emoji-symbols/search-emoji-symbols", "emoji"]
+
+# Smart window management with chord prefixes
+# No prefix: nudge (1/8 screen). 2=halves, 3=thirds, 4=quarters
+# Examples: h=nudge left, 2h=left-half, 3h=left-third, 4hk=top-left quarter
+[9]
+label = "[window]"
+chord_enabled = true
+chord_timeout = 4.0
+h = ["smartwindow:h", "←"]
+j = ["smartwindow:j", "↓"]
+k = ["smartwindow:k", "↑"]
+l = ["smartwindow:l", "→"]
+t = ["smartwindow:t", "top"]
+b = ["smartwindow:b", "bot"]
+m = ["window:maximized", "max"]
+f = ["window:fullscreen", "full"]
+s = ["dynamic:screens", "screen"]
+
+# Prefixes for quick actions
+[u]
+label = "[prefixes]"
+t = "text:you@example.com"       # types email address
+z = "cmd:code ~/.zshrc"          # run any terminal command
+x = "code: ~/.zshrc"             # open a file or directory in VS Code
+s = "shortcut:cmd shift 4"       # trigger a keyboard shortcut
+r = "reload"                     # reload your hammerspoon config
+i = "input:https://google.com/search?q={input}"  # capture input
+
+# Searches menu
+["y_/"]
+label = "[searches]"
+layout_mode = "vertical"
+max_column_height = 8
+"/" = ["input:https://google.com/search?q={input}", "Google Search"]
+f = ["input:https://www.flightradar24.com/data/flights/{input}", "Flight Info"]
+
+
+# glhf :) share your cool ideas with me on
+# twitter @saml_dev - <leader> b m t
+# bluesky @saml.dev - <leader> b m b
+# github saml-dev   - <leader> b m g

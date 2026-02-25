@@ -13,7 +13,7 @@ flowchart TB
     subgraph Init["Bootstrap (~/.hammerspoon/init.lua)"]
         HSInit["hs.loadSpoon()"]
         HTTPRouter["HTTPRouter Spoon<br/>(HTTP Server)"]
-        Inyo["Inyo Spoon<br/>(Monitoring)"]
+        Inyo["Inyo Spoon<br/>(Animated Backgrounds)"]
     end
 
     subgraph Hammerflow["Jammerflow Module"]
@@ -170,7 +170,7 @@ flowchart TB
 2. **~/.hammerspoon/init.lua** loads Spoons via `hs.loadSpoon()`
 3. **HTTPRouter** starts HTTP server for web-based config editor
 4. **Jammerflow** initializes and parses TOML configuration
-5. **Inyo** provides monitoring/notification capabilities
+5. **Inyo** provides code-rendered animated background templates for the webview UI
 
 ### Configuration Pipeline
 1. **TOML files** (`config.toml`, `home.toml`, `work.toml`) define keybindings

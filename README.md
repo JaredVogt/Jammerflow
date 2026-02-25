@@ -71,12 +71,14 @@ max_column_height = 10          # Maximum items per column (vertical mode, defau
 grid_spacing = " | "            # Spacing between columns (default: " | ")
 grid_separator = " ▸ "          # Separator between key and label (default: " : ")
 
-# Background image configuration (optional)
+# Background configuration (optional — static image, GIF, or animated via Inyo spoon)
 [background]
 image = "background.gif"        # Image filename in images/ directory
 opacity = 0.6                  # Transparency: 0.0 (invisible) to 1.0 (opaque)
 position = "center center"     # Position: "center center", "top left", "bottom right", etc.
 size = "cover"                 # Size behavior: "cover", "contain", "auto", "100% 100%", "200px", etc.
+# type = "inyo"                # Uncomment to use Inyo animated backgrounds (requires Inyo.spoon)
+# template = "jellyfish"       # Inyo template name (jellyfish, particles, matrix, etc.)
 ```
 
 ### Key Naming Rules
@@ -693,6 +695,22 @@ size = "cover"                 # Size behavior options:
 # "200px"     - Fixed width, height scales proportionally
 # "200px 150px" - Fixed width and height
 ```
+
+#### Animated Backgrounds with Inyo
+
+Instead of a static image or GIF, you can use code-rendered animated backgrounds powered by the [Inyo](https://github.com/JaredVogt/Inyo.spoon) spoon. Inyo provides HTML/CSS/JS animation templates that run directly in the webview — no video files needed.
+
+```toml
+[background]
+type = "inyo"                   # Enable Inyo animated backgrounds
+template = "jellyfish"          # Template name (jellyfish, particles, matrix, etc.)
+image = "background.gif"        # Fallback image if Inyo isn't available
+opacity = 0.6
+```
+
+**Setup:** Install `Inyo.spoon` in `~/.hammerspoon/Spoons/Inyo.spoon/`. Templates live in `Inyo.spoon/templates/` as self-contained HTML files. If Inyo isn't installed, Jammerflow falls back to the `image` field.
+
+Per-menu Inyo backgrounds also work — use `background_type` and `background_template` in a menu's table section.
 
 #### Text Mode
 The classic lightweight display with:

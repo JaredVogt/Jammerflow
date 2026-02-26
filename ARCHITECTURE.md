@@ -22,7 +22,7 @@ flowchart TB
         subgraph Config["Configuration"]
             TOML["config.toml<br/>home.toml / work.toml"]
             TinyTOML["lib/tinytoml.lua<br/>(Parser)"]
-            Validator["toml_validator.lua"]
+            Validator["configurator/toml_validator.lua"]
         end
 
         subgraph Core["Core Processing"]
@@ -175,7 +175,7 @@ flowchart TB
 ### Configuration Pipeline
 1. **TOML files** (`config.toml`, `home.toml`, `work.toml`) define keybindings
 2. **tinytoml.lua** parses TOML to Lua tables
-3. **toml_validator.lua** validates structure before parsing
+3. **configurator/toml_validator.lua** validates structure before parsing
 4. **parseKeyMap()** converts config to keymap structure
 5. **getActionAndLabel()** resolves action strings to executable functions
 
@@ -238,7 +238,11 @@ Generators in `DynamicMenu/generators/` create runtime menu items:
 Jammerflow/
 ├── init.lua                    # Main module (1,648 lines)
 ├── config.toml                 # User configuration
-├── toml_validator.lua          # TOML validation
+├── configurator/               # Config editor & validation
+│   ├── config-editor.html      # Visual config editor
+│   ├── CONFIG_EDITOR_USAGE.md  # Editor usage guide
+│   ├── test-config.toml        # Test configuration
+│   └── toml_validator.lua      # TOML validation
 ├── lib/
 │   └── tinytoml.lua            # TOML parser
 ├── RecursiveBinder/

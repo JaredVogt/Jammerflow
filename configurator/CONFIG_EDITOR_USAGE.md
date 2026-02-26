@@ -3,7 +3,7 @@
 ## Quick Start
 
 ### 1. Open the Editor
-Open `~/.hammerspoon/Spoons/Hammerflow.spoon/config-editor.html` in your web browser (Chrome/Safari recommended).
+Open `~/.hammerspoon/Spoons/Hammerflow.spoon/configurator/config-editor.html` in your web browser (Chrome/Safari recommended).
 
 ### 2. Load Your Config
 - **Drag & Drop**: Drag your existing `config.toml` file onto the editor

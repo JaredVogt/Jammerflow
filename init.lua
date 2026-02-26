@@ -139,7 +139,7 @@ function obj:setupHTTPEndpoints()
 
   local hammerflowDir = hs.configdir .. '/Hammerflow/'
   local configPath = hammerflowDir .. 'config.toml'
-  local configEditorPath = hammerflowDir .. 'config-editor.html'
+  local configEditorPath = hammerflowDir .. 'configurator/config-editor.html'
   local vendorDir = hammerflowDir .. 'vendor/'
   local vendorFiles = {
     ['vendor/toml-loader.mjs'] = {
@@ -340,7 +340,7 @@ local function split(inputstr, sep)
 end
 
 local toml = loadfile_relative("lib/tinytoml.lua")
-local validateTomlStructure = loadfile_relative("toml_validator.lua")
+local validateTomlStructure = loadfile_relative("configurator/toml_validator.lua")
 local dynamicMenu = loadfile_relative("DynamicMenu/init.lua")
 local UrlHandler = loadfile_relative("url_handler.lua")
 

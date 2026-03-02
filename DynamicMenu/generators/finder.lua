@@ -10,7 +10,7 @@ return function(args)
     key = "f",
     sortKey = "1_",
     label = "Finder",
-    icon = "finder.png",
+    icon = "icons/finder.png",
     action = "Finder"
   })
 
@@ -19,7 +19,7 @@ return function(args)
     key = "d",
     sortKey = "2_",
     label = "Downloads",
-    icon = "finder.png",
+    icon = "icons/finder.png",
     action = function()
       hs.execute("open ~/Downloads")
     end
@@ -36,7 +36,7 @@ return function(args)
       local displayName = windowName:gsub(home, "~")
       table.insert(items, {
         label = displayName,
-        icon = "finder.png",
+        icon = "icons/finder.png",
         action = function()
           local script = string.format([[
             tell application "System Events"

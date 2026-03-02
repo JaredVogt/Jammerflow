@@ -39,7 +39,7 @@ return function(args)
 
   -- Determine app name
   local appName = browser == "chrome" and "Google Chrome" or "Google Chrome Canary"
-  local iconName = browser == "chrome" and "chrome.png" or "canary.png"
+  local iconName = browser == "chrome" and "icons/chrome.png" or "icons/canary.png"
 
   -- AppleScript with BATCH fetching - much faster than JXA per-tab calls
   -- Uses "title of every tab of every window" to get all data in 2 IPC calls
@@ -99,10 +99,10 @@ return function(args)
             local email = title:match("([%w%._%+%-]+@[%w%._%+%-]+)")
             if email then
               displayLabel = email
-              useIcon = "generic.png"
+              useIcon = "icons/generic.png"
             else
               displayLabel = "Gmail"
-              useIcon = "generic.png"
+              useIcon = "icons/generic.png"
             end
           -- Special formatting for Calendar tabs - show "Account - Calendar"
           elseif domain == "calendar.google.com" then
@@ -113,7 +113,7 @@ return function(args)
             else
               displayLabel = "Calendar"
             end
-            useIcon = "generic.png"
+            useIcon = "icons/generic.png"
           else
             -- Default format: "Title — domain.com"
             displayLabel = title .. " — " .. domain

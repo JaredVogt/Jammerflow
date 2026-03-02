@@ -24,7 +24,7 @@ return function(args)
     local targetWin = win
     table.insert(items, {
       label = displayName,
-      icon = "cursor.png",
+      icon = "icons/cursor.png",
       action = function()
         targetWin:application():activate()
         targetWin:raise()

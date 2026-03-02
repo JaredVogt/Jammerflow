@@ -43,7 +43,7 @@ return function(args)
   
   -- Add icons if available
   for _, bookmark in ipairs(bookmarks) do
-    bookmark.icon = "bookmark.png"  -- Use a generic bookmark icon
+    bookmark.icon = "icons/bookmark.png"  -- Use a generic bookmark icon
   end
   
   return bookmarks
@@ -57,27 +57,27 @@ return function(args)
   return {
     {
       label = "Lock Screen",
-      icon = "lock.png",
+      icon = "icons/lock.png",
       action = function() hs.caffeinate.lockScreen() end
     },
     {
       label = "Sleep",
-      icon = "sleep.png",
+      icon = "icons/sleep.png",
       action = function() hs.caffeinate.systemSleep() end
     },
     {
       label = "Restart",
-      icon = "restart.png",
+      icon = "icons/restart.png",
       action = function() hs.caffeinate.restartSystem() end
     },
     {
       label = "Empty Trash",
-      icon = "trash.png",
+      icon = "icons/trash.png",
       action = "cmd:osascript -e 'tell application \"Finder\" to empty trash'"
     },
     {
       label = "Show Desktop",
-      icon = "desktop.png",
+      icon = "icons/desktop.png",
       action = "shortcut:cmd f3"
     }
   }

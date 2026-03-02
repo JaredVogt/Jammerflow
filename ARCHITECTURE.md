@@ -258,6 +258,8 @@ Jammerflow/
 │       ├── git.lua
 │       ├── docker.lua
 │       └── linear.lua
-├── images/                     # Icons for menu items
+├── images/                     # Images for menu items
+│   ├── icons/                 # Icon PNGs for menu items
+│   └── backgrounds/           # Background images/GIFs
 └── vendor/                     # JS libraries for web UI
 ```

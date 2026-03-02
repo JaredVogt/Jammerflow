@@ -23,7 +23,7 @@ return function(args)
         
         table.insert(items, {
           label = displayName,
-          icon = isDir and "folder.png" or "file.png",
+          icon = isDir and "icons/folder.png" or "icons/file.png",
           action = isDir and ("dynamic:files(" .. fullPath .. ")") or ("code:" .. fullPath)
         })
       end
@@ -35,7 +35,7 @@ return function(args)
   if path ~= "/" then
     table.insert(items, 1, {
       label = "↩ Parent Directory",
-      icon = "folder.png",
+      icon = "icons/folder.png",
       action = "dynamic:files(" .. path:match("(.*/)[^/]+/?$") .. ")"
     })
   end

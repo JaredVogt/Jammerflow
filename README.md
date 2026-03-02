@@ -2,7 +2,7 @@
 
 A powerful Hammerspoon configuration framework for creating leader-key driven shortcuts and window management. Jammerflow provides an intuitive way to bind sequential key combinations to various actions including app launching, URL opening, text insertion, window management, and custom functions.
 
-> **Note:** Jammerflow is the public release of the Hammerflow project. The Hammerspoon spoon is still named `Hammerflow.spoon` for compatibility — internal code references to the spoon name are intentional. Users can add their own icons by dropping PNGs into the `images/` directory.
+> **Note:** Jammerflow is the public release of the Hammerflow project. The Hammerspoon spoon is still named `Hammerflow.spoon` for compatibility — internal code references to the spoon name are intentional. Users can add their own icons by dropping PNGs into `images/icons/` and backgrounds into `images/backgrounds/`.
 
 ## Overview
 
@@ -46,7 +46,7 @@ Jammerflow consists of three main components:
    ```toml
    [w]
    label = "[window]"
-   icon = "window.png"            # Optional group icon
+   icon = "icons/window.png"       # Optional group icon
    h = "window:left-half"         # Move window to left half
    l = "window:right-half"        # Move window to right half
    f = "window:fullscreen"        # Toggle fullscreen
@@ -73,7 +73,7 @@ grid_separator = " ▸ "          # Separator between key and label (default: " 
 
 # Background configuration (optional — static image, GIF, or animated via Inyo spoon)
 [background]
-image = "background.gif"        # Image filename in images/ directory
+image = "backgrounds/background.gif"  # Image filename in images/ directory
 opacity = 0.6                  # Transparency: 0.0 (invisible) to 1.0 (opaque)
 position = "center center"     # Position: "center center", "top left", "bottom right", etc.
 size = "cover"                 # Size behavior: "cover", "contain", "auto", "100% 100%", "200px", etc.
@@ -103,7 +103,7 @@ g = "Google"
 
 # Then table sections
 [background]
-image = "bg.gif"
+image = "backgrounds/bg.gif"
 
 [l]
 label = "[linear]"
@@ -114,7 +114,7 @@ label = "[linear]"
 leader_key = "f20"
 
 [background]
-image = "bg.gif"
+image = "backgrounds/bg.gif"
 
 # These keys will NOT work - they're after a table section
 c = "Cursor"  # IGNORED
@@ -131,7 +131,7 @@ k = "Kitty"                     # Launch by name (lowercase 'k')
 s = "Safari"                    # Launch Safari (lowercase 's')
 S = "Slack"                     # Launch Slack (uppercase 'S' - Shift+S)
 v = ["Visual Studio Code", "VS Code"]  # With custom label
-v = ["Visual Studio Code", "VS Code", "vscode.png"]  # With custom label and icon
+v = ["Visual Studio Code", "VS Code", "icons/vscode.png"]  # With custom label and icon
 
 # Special characters must be quoted
 "/" = "Safari"                  # Forward slash requires quotes
@@ -306,14 +306,14 @@ Create organized groups of actions:
 ```toml
 [l]
 label = "[links]"               # Optional group label
-icon = "links.png"              # Optional group icon
+icon = "icons/links.png"        # Optional group icon
 g = "https://github.com"
 t = "https://twitter.com"
 
 # Nested groups
 [l.m]
 label = "[my links]"
-icon = "personal.png"           # Icons work on nested groups too
+icon = "icons/personal.png"     # Icons work on nested groups too
 g = ["https://github.com/myuser", "my github"]
 t = ["https://twitter.com/myuser", "my twitter"]
 ```
@@ -548,9 +548,9 @@ Icons can be added to actions using the array format with a third parameter:
 
 ```toml
 # Format: [action, label, icon_filename]
-k = ["Kitty", "Terminal", "kitty.png"]
-g = ["https://github.com", "GitHub", "github.png"]
-c = ["code ~/.hammerspoon", "Config", "gear.png"]
+k = ["Kitty", "Terminal", "icons/kitty.png"]
+g = ["https://github.com", "GitHub", "icons/github.png"]
+c = ["code ~/.hammerspoon", "Config", "icons/gear.png"]
 ```
 
 Icons can also be added to groups using the `icon` property:
@@ -558,20 +558,20 @@ Icons can also be added to groups using the `icon` property:
 ```toml
 [l]
 label = "[linear]"
-icon = "linear.png"              # Group icon
-b = ["linear://project/view/task-id", "Bryce Task", "bryce.png"]
-c = ["linear://project/view/other-task", "Other Task", "task.png"]
+icon = "icons/linear.png"        # Group icon
+b = ["linear://project/view/task-id", "Bryce Task", "icons/bryce.png"]
+c = ["linear://project/view/other-task", "Other Task", "icons/task.png"]
 ```
 
 ### Default Icon Fallback
 
-When no icon is specified for a menu item, Jammerflow automatically uses `generic.png` as a fallback. This ensures consistent vertical alignment of all menu items. You can customize the default appearance by replacing the `generic.png` file in the images directory.
+When no icon is specified for a menu item, Jammerflow automatically uses `icons/generic.png` as a fallback. This ensures consistent vertical alignment of all menu items. You can customize the default appearance by replacing the `generic.png` file in the `images/icons/` directory.
 
 ### Icon Requirements
 
-- **Location**: Place images in the `images/` directory within your Jammerflow folder
-- **Size**: 48x48 pixels recommended (any size works, will be scaled to 48x48)
-- **Format**: PNG recommended, JPEG also supported
+- **Location**: Place icons in `images/icons/` and backgrounds in `images/backgrounds/` within your Jammerflow folder
+- **Size**: 48x48 pixels recommended for icons (any size works, will be scaled to 48x48)
+- **Format**: PNG recommended, JPEG and WebP also supported; GIF for animated icons/backgrounds
 - **Encoding**: Images are automatically base64-encoded for webview display
 
 ### Icon Directory Structure
@@ -580,11 +580,15 @@ When no icon is specified for a menu item, Jammerflow automatically uses `generi
 Jammerflow/
 ├── init.lua
 ├── config.toml
-├── images/              # Icon directory — drop your own PNGs here
-│   ├── kitty.png       # Terminal icon
-│   ├── github.png      # GitHub icon
-│   ├── generic.png     # Default fallback icon
-│   └── gear.png        # Settings icon
+├── images/                    # Image directory
+│   ├── icons/                # Drop your own icon PNGs here
+│   │   ├── kitty.png        # Terminal icon
+│   │   ├── github.png       # GitHub icon
+│   │   ├── generic.png      # Default fallback icon
+│   │   └── gear.png         # Settings icon
+│   └── backgrounds/          # Background images/GIFs
+│       ├── background.gif   # Default background
+│       └── custom-bg.png    # Custom background
 ├── RecursiveBinder/
 │   └── init.lua
 └── lib/
@@ -601,13 +605,13 @@ You can include HTML tags directly in your labels, but you must properly escape 
 
 ```toml
 # Option 1: Use single quotes for HTML attributes (recommended)
-g = ["km:Google_meet", "<span style='font-weight: bold; color: red'>G</span>oogle Meet", "google_meet.png"]
+g = ["km:Google_meet", "<span style='font-weight: bold; color: red'>G</span>oogle Meet", "icons/google_meet.png"]
 
 # Option 2: Use TOML triple quotes
-p = ["Claude", '''<b>Claude</b> <span style="color: blue">AI</span>''', "claude.png"]
+p = ["Claude", '''<b>Claude</b> <span style="color: blue">AI</span>''', "icons/claude.png"]
 
 # Option 3: Escape double quotes with backslashes
-k = ["Kitty", "<span style=\"text-decoration: underline\">Terminal</span>", "kitty.png"]
+k = ["Kitty", "<span style=\"text-decoration: underline\">Terminal</span>", "icons/kitty.png"]
 ```
 
 ### Supported HTML Tags
@@ -624,10 +628,10 @@ Since labels are rendered in a webview, most HTML tags work:
 
 ```toml
 # Bold and colored text
-m = ["Mail", "<b>Mail</b> <span style='color: #007AFF'>(3 new)</span>", "mail.png"]
+m = ["Mail", "<b>Mail</b> <span style='color: #007AFF'>(3 new)</span>", "icons/mail.png"]
 
 # Multiple styles
-t = ["Terminal", "<span style='font-family: monospace; background: #333; color: #0f0; padding: 2px'>Terminal</span>", "terminal.png"]
+t = ["Terminal", "<span style='font-family: monospace; background: #333; color: #0f0; padding: 2px'>Terminal</span>", "icons/terminal.png"]
 
 # Combining with groups
 [d]
@@ -647,9 +651,11 @@ label = ["<span style='color: orange'>[development]</span>", "", "", {layout_mod
 Jammerflow/
 ├── init.lua              # Main framework
 ├── config.toml           # Your configuration
-├── images/               # Icon directory — add your own icons here
-│   ├── app1.png         # 48x48px icons
-│   └── app2.png
+├── images/               # Image directory
+│   ├── icons/           # Icon PNGs — add your own here
+│   │   ├── app1.png    # 48x48px icons
+│   │   └── app2.png
+│   └── backgrounds/     # Background images/GIFs
 ├── RecursiveBinder/
 │   └── init.lua         # Enhanced RecursiveBinder spoon
 └── lib/
@@ -684,7 +690,7 @@ display_mode = "webview"  # Modern visual grid
 
 # Background image configuration (optional)
 [background]
-image = "background.gif"        # Image filename in images/ directory
+image = "backgrounds/background.gif"  # Image filename in images/ directory
 opacity = 0.6                  # Transparency: 0.0 (invisible) to 1.0 (opaque)
 position = "center center"     # Position: "center center", "top left", "bottom right", etc.
 size = "cover"                 # Size behavior options:
@@ -704,7 +710,7 @@ Instead of a static image or GIF, you can use code-rendered animated backgrounds
 [background]
 type = "inyo"                   # Enable Inyo animated backgrounds
 template = "jellyfish"          # Template name (jellyfish, particles, matrix, etc.)
-image = "background.gif"        # Fallback image if Inyo isn't available
+image = "backgrounds/background.gif"  # Fallback image if Inyo isn't available
 opacity = 0.6
 ```
 
@@ -752,7 +758,7 @@ You can override layout settings for individual menu items or groups by using th
 "3" = ["dynamic:cursor", "Cursor Windows", "", {layout_mode = "vertical", max_column_height = 8}]
 
 # Regular action with custom layout
-k = ["Kitty", "Terminal", "kitty.png", {layout_mode = "horizontal", max_grid_columns = 3}]
+k = ["Kitty", "Terminal", "icons/kitty.png", {layout_mode = "horizontal", max_grid_columns = 3}]
 
 # Group with custom layout (use array format for label)
 [w]
@@ -863,15 +869,15 @@ The `obsidian` generator creates dynamic menus for browsing Obsidian vault folde
 ```toml
 # Browse VMs folder with pagination (15 files per page)
 [n.v]
-action = ["dynamic:obsidian|VMs,15", "VMs", "obsidian.png", { layout_mode = "vertical" }]
+action = ["dynamic:obsidian|VMs,15", "VMs", "icons/obsidian.png", { layout_mode = "vertical" }]
 
 # Browse Youtube folder with pagination
 [n.y]
-action = ["dynamic:obsidian|Youtube,15", "Youtube Transcriptions", "obsidian.png", { layout_mode = "vertical" }]
+action = ["dynamic:obsidian|Youtube,15", "Youtube Transcriptions", "icons/obsidian.png", { layout_mode = "vertical" }]
 
 # Browse documentation folder (no limit)
 [n.p]
-action = ["dynamic:obsidian|ProPatch Manual/web-manual/docs", "ProPatch Manual", "obsidian.png", { layout_mode = "vertical" }]
+action = ["dynamic:obsidian|ProPatch Manual/web-manual/docs", "ProPatch Manual", "icons/obsidian.png", { layout_mode = "vertical" }]
 ```
 
 **Features:**
@@ -942,7 +948,7 @@ The `claude_web` generator is purpose-built for managing Claude Web tabs in Goog
 [q]
 action = "dynamic:claude_web"
 label = "Claude Web"
-icon = "claude.png"
+icon = "icons/claude.png"
 layout_mode = "vertical"
 max_column_height = 15
 ```
@@ -980,7 +986,7 @@ The `gemini` generator enables fast switching between Google Gemini conversation
 [m]
 action = "dynamic:gemini|canary,user@example.com"
 label = "Gemini"
-icon = "gemini.png"
+icon = "icons/gemini.png"
 layout_mode = "vertical"
 max_column_height = 15
 ```
@@ -1053,7 +1059,7 @@ return {
 return {
   {
     label = "Window Name",
-    icon = "cursor.png",
+    icon = "icons/cursor.png",
     action = {
       type = "km",
       macro = "MacroName",

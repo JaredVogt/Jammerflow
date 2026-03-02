@@ -126,13 +126,13 @@ return function(args)
   -- Fixed items (use cached firstWindow data)
   items["1"] = {
     label = "New Chat",
-    icon = "gemini.png",
+    icon = "icons/gemini.png",
     action = function() openGeminiUrl(baseUrl .. "/app") end
   }
 
   items["2"] = {
     label = "Search",
-    icon = "gemini.png",
+    icon = "icons/gemini.png",
     action = function() openGeminiUrl(baseUrl .. "/search") end
   }
 
@@ -150,7 +150,7 @@ return function(args)
   if #geminiTabs > 0 and not extensionWorking then
     items["0"] = {
       label = "⚠ Install extension for titles",
-      icon = "generic.png",
+      icon = "icons/generic.png",
       action = function()
         -- Open extensions folder in Finder
         hs.execute("open '" .. hs.configdir .. "/Spoons/Hammerflow.spoon/extensions/gemini-tab-titles'")
@@ -165,7 +165,7 @@ return function(args)
 
     items[key] = {
       label = tab.title,
-      icon = "gemini.png",
+      icon = "icons/gemini.png",
       action = function()
         local switchScript = string.format([[
           (function() {

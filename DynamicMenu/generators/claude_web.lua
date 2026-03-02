@@ -10,7 +10,7 @@ return function(args)
   -- Opens next to existing Claude tab to inherit tab group
   items["a"] = {
     label = "New Chat",
-    icon = "claude.png",
+    icon = "icons/claude.png",
     action = function()
       -- Combined script: find Claude tab, bring window to front, create new tab next to it
       -- Uses AppleScript for more reliable tab positioning
@@ -135,7 +135,7 @@ return function(args)
 
       items[key] = {
         label = displayLabel,
-        icon = "claude.png",
+        icon = "icons/claude.png",
         action = function()
           -- Search for tab by URL at switch time (indices may be stale)
           local switchScript = string.format([[

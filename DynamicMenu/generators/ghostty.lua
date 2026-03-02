@@ -15,7 +15,7 @@ return function(args)
       table.insert(items, {
         key = "1_g",
         label = "Ghostty (Dev)",
-        icon = "ghostty.png",
+        icon = "icons/ghostty.png",
         action = function()
           os.execute('open "' .. devAppPath .. '"')
         end
@@ -46,7 +46,7 @@ return function(args)
     local targetWin = win
     table.insert(items, {
       label = displayName,
-      icon = "ghostty.png",
+      icon = "icons/ghostty.png",
       action = function()
         targetWin:application():activate()
         targetWin:raise()
@@ -62,7 +62,7 @@ return function(args)
     table.insert(items, {
       key = "1_g",
       label = "Ghostty (Dev)",
-      icon = "ghostty.png",
+      icon = "icons/ghostty.png",
       action = function()
         os.execute('open "' .. devAppPath .. '"')
       end

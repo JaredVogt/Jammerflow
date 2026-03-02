@@ -8,5 +8,6 @@
 
 ## Images
 
-- New images should be added to `~/projects/dotfiles.v2/jammerflow/images/`, not directly into this repo's `images/` directory.
+- New icons should be added to `~/projects/dotfiles.v2/jammerflow/images/icons/` and backgrounds to `~/projects/dotfiles.v2/jammerflow/images/backgrounds/`.
 - The `images/` directory in this repo is symlinked from `~/projects/dotfiles.v2/jammerflow/images/`.
+- In config and Lua code, reference icons as `icons/filename.png` and backgrounds as `backgrounds/filename.gif`.

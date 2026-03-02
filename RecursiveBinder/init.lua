@@ -834,7 +834,7 @@ local function showWebviewGrid(keymap, layoutOptions)
          obj.backgroundCache = {}
       end
 
-      local backgroundFormats = {"background.gif", "background.png", "background.jpg", "background.jpeg", "background.webp"}
+      local backgroundFormats = {"backgrounds/background.gif", "backgrounds/background.png", "backgrounds/background.jpg", "backgrounds/background.jpeg", "backgrounds/background.webp"}
 
       for _, filename in ipairs(backgroundFormats) do
          if obj.backgroundCache[filename] then
@@ -881,7 +881,7 @@ local function showWebviewGrid(keymap, layoutOptions)
    -- Add grid items
    for i, item in ipairs(items) do
       local iconHtml = ""
-      local iconToUse = item.icon or "generic.png"  -- Fallback to generic.png for consistent alignment
+      local iconToUse = item.icon or "icons/generic.png"  -- Fallback to generic.png for consistent alignment
       local iconFilePath = hs.configdir .. "/Spoons/Hammerflow.spoon/images/" .. iconToUse
          
          -- Try to read and encode image as base64

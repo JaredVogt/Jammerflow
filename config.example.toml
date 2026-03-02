@@ -38,16 +38,16 @@ grid_separator = " ▸ "    # separator between key and label
 # [table] sections. This is a TOML specification requirement.
 
 # --- Apps ---
-p = ["Claude", "Claude", "claude.png"]
-5 = ["ChatGPT", "ChatGPT", "chatgpt.png"]
+p = ["Claude", "Claude", "icons/claude.png"]
+5 = ["ChatGPT", "ChatGPT", "icons/chatgpt.png"]
 
 # --- Keyboard Maestro macros ---
-g = ["km:Google_meet", "<span style='font-weight: bold; color: red'>G</span>oogle Meet", "google_meet.png"]
-v = ["km:ICRECORDER_copy", "Rec Copy", "IC.webp"]
+g = ["km:Google_meet", "<span style='font-weight: bold; color: red'>G</span>oogle Meet", "icons/google_meet.png"]
+v = ["km:ICRECORDER_copy", "Rec Copy", "icons/IC.webp"]
 
 # --- Browser-specific URLs ---
-j = ["chrome:https://docs.google.com/spreadsheets/d/EXAMPLE_SHEET_ID/edit?gid=0#gid=0", "My Spreadsheet", "dots.png"]
-m = ["canary:https://gemini.google.com/app?authuser=user@example.com", "Google Gemini", "gemini.png"]
+j = ["chrome:https://docs.google.com/spreadsheets/d/EXAMPLE_SHEET_ID/edit?gid=0#gid=0", "My Spreadsheet", "icons/dots.png"]
+m = ["canary:https://gemini.google.com/app?authuser=user@example.com", "Google Gemini", "icons/gemini.png"]
 
 # --- Plain URLs ---
 e = ["https://example.com/your-portal", "example portal"]
@@ -62,7 +62,7 @@ e = ["https://example.com/your-portal", "example portal"]
 [background]
 type = "inyo"                 # "inyo" for animated templates, or omit for static image
 template = "jellyfish"        # Inyo template: jellyfish, particles, matrix, etc.
-image = "background.gif"      # Fallback image in images/ directory
+image = "backgrounds/background.gif"      # Fallback image in images/ directory
 opacity = 0.6                 # Transparency: 0.0 (invisible) to 1.0 (opaque)
 position = "center center"    # Position: "center center", "top left", "bottom right", etc.
 size = "cover"                # Size options:
@@ -92,7 +92,7 @@ action = "dynamic:cursor"
 label = "Cursor Windows"
 layout_mode = "vertical"
 max_column_height = 20
-background_image = "cursor.gif"
+background_image = "backgrounds/cursor.gif"
 background_opacity = 0.6
 background_position = "center center"
 background_size = "cover"
@@ -101,10 +101,10 @@ background_size = "cover"
 [4]
 action = "dynamic:kitty"
 label = "Kitty Windows"
-icon = "kitty.png"
+icon = "icons/kitty.png"
 layout_mode = "vertical"
 max_column_height = 8
-background_image = "kitty.gif"
+background_image = "backgrounds/kitty.gif"
 background_opacity = 0.6
 background_position = "center center"
 background_size = "cover"
@@ -113,7 +113,7 @@ background_size = "cover"
 [o]
 action = "dynamic:chrome|mail.google,canary"
 label = "Gmail Canary"
-icon = "generic.png"
+icon = "icons/generic.png"
 layout_mode = "vertical"
 max_column_height = 15
 
@@ -121,7 +121,7 @@ max_column_height = 15
 [i]
 action = "dynamic:chrome|mail.google,chrome"
 label = "Gmail Chrome"
-icon = "generic.png"
+icon = "icons/generic.png"
 layout_mode = "vertical"
 max_column_height = 15
 
@@ -129,7 +129,7 @@ max_column_height = 15
 [P]
 action = "dynamic:claude_web"
 label = "Claude Web"
-icon = "claude.png"
+icon = "icons/claude.png"
 layout_mode = "vertical"
 max_column_height = 15
 
@@ -149,34 +149,34 @@ max_column_height = 15
 # --- Linear ---
 [l]
 label = "[linear]"
-icon = "linear.png"
+icon = "icons/linear.png"
 layout_mode = "vertical"
 max_column_height = 8
-1_n = ["km:Linear_new", "New", "linear.png"]
-2_i = ["km:Linear_inbox", "Inbox", "linear.png"]
-3_s = ["km:Linear_search", "Search", "linear.png"]
-b = ["linear://yourcompany/view/example-view-id-1", "TeamMember1", "linear.png"]
-g = ["linear://yourcompany/view/example-view-id-2", "TeamMember2", "linear.png"]
-j = ["linear://yourcompany/view/example-view-id-3", "TeamMember3", "linear.png"]
-c = ["linear://yourcompany/project/example-project-1/issues?layout=board&ordering=priority&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "Project1", "linear.png"]
-w = ["linear://yourcompany/project/example-project-2/issues?layout=board&ordering=priority&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "Project2", "linear.png"]
-a = ["linear://yourcompany/view/example-view-id-4?layout=board&ordering=manual&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "TeamMember4", "linear.png"]
-p = ["linear://yourcompany/project/example-project-3/issues?layout=board&ordering=priority&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "Project3", "linear.png"]
-0_l = ["Linear", "Linear", "linear.png"]
+1_n = ["km:Linear_new", "New", "icons/linear.png"]
+2_i = ["km:Linear_inbox", "Inbox", "icons/linear.png"]
+3_s = ["km:Linear_search", "Search", "icons/linear.png"]
+b = ["linear://yourcompany/view/example-view-id-1", "TeamMember1", "icons/linear.png"]
+g = ["linear://yourcompany/view/example-view-id-2", "TeamMember2", "icons/linear.png"]
+j = ["linear://yourcompany/view/example-view-id-3", "TeamMember3", "icons/linear.png"]
+c = ["linear://yourcompany/project/example-project-1/issues?layout=board&ordering=priority&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "Project1", "icons/linear.png"]
+w = ["linear://yourcompany/project/example-project-2/issues?layout=board&ordering=priority&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "Project2", "icons/linear.png"]
+a = ["linear://yourcompany/view/example-view-id-4?layout=board&ordering=manual&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "TeamMember4", "icons/linear.png"]
+p = ["linear://yourcompany/project/example-project-3/issues?layout=board&ordering=priority&grouping=workflowState&subGrouping=none&showCompletedIssues=all&showSubIssues=true&showTriageIssues=false", "Project3", "icons/linear.png"]
+0_l = ["Linear", "Linear", "icons/linear.png"]
 
 # --- Apps ---
 [a]
 label = "[apps]"
 layout_mode = "vertical"
-c = ["Calendar", "Calendar", "calendar.webp"]
-1 = ["1Password", "1Password", "1password.png"]
-p = ["YourApp", "YourApp", "generic.png"]
-r = ["Cursor", "Cursor", "cursor.png"]
-w = ["Windsurf", "Windsurf", "windsurf.png"]
-v = ["VoiceMemos", "Voice Memos", "voicememo.png"]
-o = ["Obsidian", "Obsidian", "obsidian.png"]
-a = ["Asana", "Asana", "asana.png"]
-h = ["Whatsapp", "Whatsapp", "voicememo.png"]
+c = ["Calendar", "Calendar", "icons/calendar.webp"]
+1 = ["1Password", "1Password", "icons/1password.png"]
+p = ["YourApp", "YourApp", "icons/generic.png"]
+r = ["Cursor", "Cursor", "icons/cursor.png"]
+w = ["Windsurf", "Windsurf", "icons/windsurf.png"]
+v = ["VoiceMemos", "Voice Memos", "icons/voicememo.png"]
+o = ["Obsidian", "Obsidian", "icons/obsidian.png"]
+a = ["Asana", "Asana", "icons/asana.png"]
+h = ["Whatsapp", "Whatsapp", "icons/voicememo.png"]
 
 # --- Links ---
 [b]
@@ -187,25 +187,25 @@ s = "https://goldmansachs.com"
 # --- Dots/Scripts (Keyboard Maestro) ---
 [d]
 label = "[dots]"
-icon = "dots.png"
-d = ["km:Kitty_dot", "DOTS", "dots.png"]
-n = ["km:Kitty_clips", "CLIPS", "dots.png"]
-v = ["km:Nvim_dot", "VIM", "dots.png"]
-p = ["km:Md_dot", "AI MDs", "dots.png"]
-l = ["linear://yourcompany/team/TEAM/all", "Linear Issues", "linear.png"]
+icon = "icons/dots.png"
+d = ["km:Kitty_dot", "DOTS", "icons/dots.png"]
+n = ["km:Kitty_clips", "CLIPS", "icons/dots.png"]
+v = ["km:Nvim_dot", "VIM", "icons/dots.png"]
+p = ["km:Md_dot", "AI MDs", "icons/dots.png"]
+l = ["linear://yourcompany/team/TEAM/all", "Linear Issues", "icons/linear.png"]
 
 # --- Obsidian ---
 [n]
 label = "[Obsidian]"
-icon = "obsidian.png"
-d = ["obsidian://open?vault=SolidBlack&file=Home", "Home", "obsidian.png"]
-n = ["obsidian://new?vault=VaultName&name=NEWTEST", "new", "obsidian.png"]
-t = ["obsidian://new", "new test", "obsidian.png"]
+icon = "icons/obsidian.png"
+d = ["obsidian://open?vault=SolidBlack&file=Home", "Home", "icons/obsidian.png"]
+n = ["obsidian://new?vault=VaultName&name=NEWTEST", "new", "icons/obsidian.png"]
+t = ["obsidian://new", "new test", "icons/obsidian.png"]
 
 # --- Spreadsheets ---
 [r]
 label = "[sheets]"
-icon = "generic.png"
+icon = "icons/generic.png"
 layout_mode = "vertical"
 o = ["chrome:https://docs.google.com/spreadsheets/d/EXAMPLE_SHEET_ID_1/edit?gid=0#gid=0", "Sheet1"]
 p = ["chrome:https://docs.google.com/spreadsheets/d/EXAMPLE_SHEET_ID_2/edit?gid=0#gid=0", "Sheet2"]
@@ -221,14 +221,14 @@ e = ["raycast://extensions/raycast/emoji-symbols/search-emoji-symbols", "emoji"]
 # --- Work ---
 [w]
 label = "[work]"
-icon = "generic.png"
+icon = "icons/generic.png"
 s = ["canary:https://docs.google.com/spreadsheets/d/EXAMPLE_SHEET_ID_5/edit?gid=0#gid=0", "Sales"]
 n = ["canary:https://docs.google.com/spreadsheets/d/EXAMPLE_SHEET_ID_6/edit?gid=0#gid=0", "Serial Numbers"]
 
 # --- Home ---
 [h]
 label = "[home]"
-u = ["km:unifi_hs", "Unifi", "dots.png"]
+u = ["km:unifi_hs", "Unifi", "icons/dots.png"]
 
 # --- Window Management ---
 [9]
@@ -248,15 +248,15 @@ p = ["raycast://extensions/raycast/window-management/center-third", "center thir
 ["y_/"]
 label = "[searches]"
 layout_mode = "vertical"
-background_image = "search.gif"
+background_image = "backgrounds/search.gif"
 max_column_height = 8
 "/" = ["input:https://google.com/search?q={input}", "Google Search"]
-w = ["input:https://drive.google.com/drive/search?q={input}&authuser=user%40company.com", "Work Search", "generic.png"]
-m = ["input:https://drive.google.com/drive/search?q={input}&authuser=user%40company.com", "My Work Drive", "generic.png"]
+w = ["input:https://drive.google.com/drive/search?q={input}&authuser=user%40company.com", "Work Search", "icons/generic.png"]
+m = ["input:https://drive.google.com/drive/search?q={input}&authuser=user%40company.com", "My Work Drive", "icons/generic.png"]
 j = ["input:https://drive.google.com/drive/search?q={input}&authuser=user%40example.com", "Personal Drive"]
-c = ["textarea:https://chatgpt.com/?model=gpt-5-pro&q={input}", "ChatGPT Pro", "chatgpt.png"]
-o = ["km:obsidian_omnisearch", "OmniSearch", "obsidian.png"]
-s = ["input:km:obsidian_search?OB_search={input}", "Search", "obsidian.png"]
+c = ["textarea:https://chatgpt.com/?model=gpt-5-pro&q={input}", "ChatGPT Pro", "icons/chatgpt.png"]
+o = ["km:obsidian_omnisearch", "OmniSearch", "icons/obsidian.png"]
+s = ["input:km:obsidian_search?OB_search={input}", "Search", "icons/obsidian.png"]
 # Tip: To target a Google account, add &authuser=email%40domain.com (@ becomes %40)
 
 
@@ -267,10 +267,10 @@ s = ["input:km:obsidian_search?OB_search={input}", "Search", "obsidian.png"]
 
 ["z_."]
 label = "[jammerflow]"
-icon = "hammerspoon.png"
-"." = ["reload", "Reload Config", "hammerspoon.png"]
-c = ["cmd:open http://localhost:8888/config-editor.html", "Config Editor", "hammerspoon.png"]
-h = ["code: ~/.hammerspoon/Hammerflow/README.md", "Open README", "hammerspoon.png"]
+icon = "icons/hammerspoon.png"
+"." = ["reload", "Reload Config", "icons/hammerspoon.png"]
+c = ["cmd:open http://localhost:8888/config-editor.html", "Config Editor", "icons/hammerspoon.png"]
+h = ["code: ~/.hammerspoon/Hammerflow/README.md", "Open README", "icons/hammerspoon.png"]
 
 
 # ═══════════════════════════════════════════════

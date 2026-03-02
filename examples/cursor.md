@@ -32,7 +32,7 @@ return function(args)
     for _, windowName in ipairs(result) do
       table.insert(items, {
         label = windowName,
-        icon = "cursor.png",
+        icon = "icons/cursor.png",
         action = {
           type = "km",
           macro = "CursorWindows",

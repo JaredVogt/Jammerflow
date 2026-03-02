@@ -76,7 +76,7 @@ return function(args)
     table.insert(fileItems, {
       label = label,
       action = action,
-      icon = "obsidian.png"
+      icon = "icons/obsidian.png"
     })
   end
 
@@ -99,7 +99,7 @@ return function(args)
       items["down"] = {
         label = "Next ↓",
         action = nextAction,
-        icon = "obsidian.png",
+        icon = "icons/obsidian.png",
         sortKey = "0"  -- Sorts first (top of menu)
       }
     end
@@ -111,7 +111,7 @@ return function(args)
       items["up"] = {
         label = "↑ Prev",
         action = prevAction,
-        icon = "obsidian.png",
+        icon = "icons/obsidian.png",
         sortKey = "~"  -- Sorts last (bottom of menu)
       }
     end

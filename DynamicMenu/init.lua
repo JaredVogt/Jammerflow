@@ -112,7 +112,7 @@ function obj:generate(generatorCall)
   end
   
   -- For cursor, chrome, gemini, finder, ghostty, and screens generators, skip cache entirely (always fetch fresh data)
-  local skipCache = (name == "cursor" or name == "chrome" or name == "gemini" or name == "finder" or name == "ghostty" or name == "screens" or name == "kitty" or name == "services")
+  local skipCache = (name == "cursor" or name == "chrome" or name == "gemini" or name == "finder" or name == "ghostty" or name == "screens" or name == "kitty" or name == "services" or name == "cmux")
   
   -- Check cache first (unless skipping)
   if not skipCache then

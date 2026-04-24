@@ -1509,6 +1509,8 @@ local function getActionAndLabel(s)
     return open(s), s, nil
   elseif startswith(s, "linear://") then
     return open(s), s, nil
+  elseif startswith(s, "asanadesktop://") then
+    return open(s), s, nil
   elseif startswith(s, "hs:") then
     return hs_run(postfix(s)), s, nil
   elseif startswith(s, "cmd:") then
